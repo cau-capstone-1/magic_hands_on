@@ -4,3 +4,16 @@
 [Oo]bj/
 [Bb]uild/
 [Bb]uilds/
+
+# Unity 로그 파일 무시
+[Ll]ogs/
+[Ll]ogs/*
+
+# UserSettings 무시
+[Uu]ser[Ss]ettings/
+
+# 특정 로그 파일 확장자 무시
+*.log
+
+# Shader 컴파일 파일 무시
+*.shader.piler*
