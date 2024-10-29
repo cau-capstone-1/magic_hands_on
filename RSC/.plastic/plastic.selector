@@ -1,0 +1,4 @@
+repository "RSC@Subin700@cloud"
+  path "/"
+    br "/main"
+    co "/main"

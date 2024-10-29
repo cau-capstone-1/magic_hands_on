@@ -1,0 +1,6 @@
+# Unity 관련 불필요한 파일 무시
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
