@@ -11,12 +11,5 @@ public class Stage : MonoBehaviour
     private void Awake()
     {
         button = GetComponent<Button>();
-        button.onClick.AddListener(OnStageSelected); // 스테이지 선택 시 이벤트 추가
-    }
-
-    private void OnStageSelected()
-    {
-        // 게임 매니저에 현재 스테이지 정보를 전달
-        GameManager.Instance.SelectStage(stageNumber, difficulty);
     }
 }
