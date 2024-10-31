@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class BirdController : MonoBehaviour
@@ -6,17 +5,28 @@ public class BirdController : MonoBehaviour
     public string BirdColor { get; private set; }
     private Transform target;
     private int hp;
+    private float attackDistance = 1.5f; // 플레이어에 도달하는 거리 임계값
+    public float SpawnTime { get; private set; } // 새가 생성된 시간 기록
 
-    public void Initialize(string color, Transform target, int hp)
+    public void Initialize(string color, Transform target, int hp, float spawnTime)
     {
         BirdColor = color;
         this.target = target;
         this.hp = hp;
+        SpawnTime = spawnTime; // 생성 시간 초기화
     }
 
     private void Update()
     {
         MoveTowardsTarget();
+
+        // 플레이어에 가까이 도달했는지 확인
+        if (Vector3.Distance(transform.position, target.position) < attackDistance)
+        {
+            GameSceneController gameController = FindObjectOfType<GameSceneController>();
+            gameController.TakeDamage(1); // 플레이어 HP를 1 감소
+            Destroy(gameObject); // 새 제거
+        }
     }
 
     private void MoveTowardsTarget()
@@ -24,16 +34,24 @@ public class BirdController : MonoBehaviour
         if (target != null)
         {
             Vector3 direction = (target.position - transform.position).normalized;
-            transform.position += direction * Time.deltaTime; // 새가 천천히 다가감
+            transform.position += direction * Time.deltaTime;
         }
     }
 
     public void TakeDamage()
     {
         hp--;
+        Debug.Log($"Bird {BirdColor} took damage. HP remaining: {hp}");
         if (hp <= 0)
         {
-            Destroy(gameObject); // HP가 0이 되면 새 제거
+            GameSceneController gameController = FindObjectOfType<GameSceneController>();
+            gameController.DisplayActionTextBasedOnTime(this); // 시간에 따른 ActionText 표시
+            Destroy(gameObject);
         }
+    }
+
+    public int GetCurrentHP()
+    {
+        return hp;
     }
 }

@@ -2,16 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameSceneController : MonoBehaviour
 {
+    [SerializeField] private GameTimer gameTimer; // GameTimer 스크립트를 참조
     [SerializeField] private GameObject character;
     [SerializeField] private Text tutorialText;
     [SerializeField] private CanvasGroup tutorialCanvasGroup;
     [SerializeField] private CanvasGroup dimCanvasGroup;
     [SerializeField] private List<GameObject> birdPrefabs;
     [SerializeField] private float birdSpawnInterval = 3.0f;
+    [SerializeField] private int playerHP = 10;
+    [SerializeField] private SoundController soundController;
+    [SerializeField] private TextMeshProUGUI hpText;
 
+    [SerializeField] private GameObject actionTextGood;
+    [SerializeField] private GameObject actionTextGreat;
+    [SerializeField] private GameObject actionTextPerfect;
+
+    private Animator characterAnimator;
     private Dictionary<KeyCode, string> keyColorMap = new Dictionary<KeyCode, string>
     {
         { KeyCode.Z, "Yellow" },
@@ -22,17 +32,80 @@ public class GameSceneController : MonoBehaviour
         { KeyCode.N, "Brown" }
     };
 
+    private Coroutine tutorialCoroutine;
+    private List<string> birdColors = new List<string> { "Yellow", "Black", "Green", "Blue", "Red", "Brown" };
+
+    private bool isGameStarted = false;
+
     private void Start()
     {
+        characterAnimator = character.GetComponent<Animator>(); // Animator 컴포넌트 가져오기
         tutorialCanvasGroup.alpha = 0;
         dimCanvasGroup.alpha = 1;
-        StartCoroutine(TutorialSequence());
+
+        // ActionText의 투명도를 0으로 초기화하고 위치를 설정
+        InitializeActionText(actionTextGood);
+        InitializeActionText(actionTextGreat);
+        InitializeActionText(actionTextPerfect);
+
+        tutorialCoroutine = StartCoroutine(TutorialSequence()); // 초기화
+
+        // 초기화 시 타이머 비활성화
+        gameTimer.enabled = false;
+
+        // 튜토리얼 시작
+        tutorialCoroutine = StartCoroutine(TutorialSequence());
     }
 
-    private IEnumerator DisplayDialogue(string message, float delay = 3.0f)
+    private void StartGame()
     {
-        tutorialText.text = message;
-        yield return new WaitForSeconds(delay);
+        isGameStarted = true;
+        StartCoroutine(FadeOutCanvasGroup(dimCanvasGroup, 1.0f)); // Dim 화면 페이드 아웃
+        StartCoroutine(SpawnBirds()); // 새 스폰 시작
+        gameTimer.enabled = true; // 타이머 시작
+        gameTimer.ResetTimer(); // 타이머 초기화
+        Debug.Log("게임 시작되었습니다.");
+    }
+
+    // ActionText를 초기화하는 함수
+    private void InitializeActionText(GameObject actionText)
+    {
+        CanvasGroup canvasGroup = actionText.GetComponent<CanvasGroup>();
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 0; // alpha 값을 0으로 설정
+        }
+
+        RectTransform rectTransform = actionText.GetComponent<RectTransform>();
+        if (rectTransform != null)
+        {
+            rectTransform.localPosition = new Vector3(rectTransform.localPosition.x, 0, rectTransform.localPosition.z); // Y 위치를 0으로 설정
+        }
+        else
+        {
+            Debug.LogWarning($"{actionText.name}에 RectTransform이 없습니다. RectTransform을 추가해 주세요.");
+        }
+    }
+
+    private void SetActionTextAlpha(GameObject actionText, float alpha)
+    {
+        CanvasGroup canvasGroup = actionText.GetComponent<CanvasGroup>();
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = alpha;
+        }
+        else
+        {
+            Debug.LogWarning($"{actionText.name}에 CanvasGroup이 없습니다. CanvasGroup을 추가해 주세요.");
+        }
+    }
+
+    private void InitializeActionTexts()
+    {
+        // ActionText 초기 alpha 값 설정
+        actionTextGood.GetComponent<CanvasGroup>().alpha = 0;
+        actionTextGreat.GetComponent<CanvasGroup>().alpha = 0;
+        actionTextPerfect.GetComponent<CanvasGroup>().alpha = 0;
     }
 
     private IEnumerator TutorialSequence()
@@ -50,32 +123,38 @@ public class GameSceneController : MonoBehaviour
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Z));
         yield return DisplayDialogue("잘했어! 이제 본격적으로 게임을 시작해보자.", 4.0f);
 
-        StartCoroutine(FadeOutCanvasGroup(dimCanvasGroup, 1.0f));
+        StartCoroutine(FadeOutCanvasGroup(dimCanvasGroup, 1.0f)); // Dim 화면 페이드 아웃
         StartCoroutine(SpawnBirds());
+    }
+
+    private IEnumerator DisplayDialogue(string message, float delay = 3.0f)
+    {
+        tutorialText.text = message;
+        yield return new WaitForSeconds(delay);
     }
 
     private IEnumerator FadeInCanvasGroup(CanvasGroup canvasGroup, float duration)
     {
-        float elapsedTime = 0;
+        float elapsedTime = 0f;
         while (elapsedTime < duration)
         {
-            canvasGroup.alpha = Mathf.Lerp(0, 1, elapsedTime / duration);
+            canvasGroup.alpha = Mathf.Lerp(0f, 1f, elapsedTime / duration);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        canvasGroup.alpha = 1;
+        canvasGroup.alpha = 1f;
     }
 
     private IEnumerator FadeOutCanvasGroup(CanvasGroup canvasGroup, float duration)
     {
-        float elapsedTime = 0;
+        float elapsedTime = 0f;
         while (elapsedTime < duration)
         {
-            canvasGroup.alpha = Mathf.Lerp(1, 0, elapsedTime / duration);
+            canvasGroup.alpha = Mathf.Lerp(1f, 0f, elapsedTime / duration);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        canvasGroup.alpha = 0;
+        canvasGroup.alpha = 0f;
         canvasGroup.gameObject.SetActive(false);
     }
 
@@ -85,7 +164,7 @@ public class GameSceneController : MonoBehaviour
         birdInstance.transform.position = GetRandomOffScreenPosition();
 
         BirdController birdController = birdInstance.GetComponent<BirdController>();
-        birdController.Initialize("Yellow", character.transform, 1); // Yellow 새 생성 및 초기화
+        birdController.Initialize("Yellow", character.transform, 1, Time.time); // Yellow 새 생성 및 초기화, 생성 시간 기록
     }
 
     private IEnumerator SpawnBirds()
@@ -106,10 +185,31 @@ public class GameSceneController : MonoBehaviour
         // 좌우 반전 적용
         bool spawnLeft = spawnPosition.x < 0;
         birdInstance.transform.position = spawnPosition;
-        birdInstance.transform.localScale = new Vector3(spawnLeft ? -0.3 : 0.3, 0.3, 0.3);
+        birdInstance.transform.localScale = new Vector3(spawnLeft ? -0.3f : 0.3f, 0.3f, 0.3f);
 
         BirdController birdController = birdInstance.GetComponent<BirdController>();
-        birdController.Initialize(birdController.BirdColor, character.transform, 3); // 예시로 HP를 3으로 설정
+
+        // 무작위 색상 설정 및 초기 HP 설정, 생성 시간 전달
+        string randomColor = birdColors[Random.Range(0, birdColors.Count)];
+        birdController.Initialize(randomColor, character.transform, 3, Time.time); // 생성 시간 추가
+        Debug.Log($"Spawned Bird Color: {randomColor}, Initial HP: 3");
+    }
+
+    public void DisplayActionTextBasedOnTime(BirdController bird)
+    {
+        float elapsedTime = Time.time - bird.SpawnTime;
+        if (elapsedTime < 2f)
+        {
+            DisplayActionText("Perfect");
+        }
+        else if (elapsedTime < 4f)
+        {
+            DisplayActionText("Great");
+        }
+        else
+        {
+            DisplayActionText("Good");
+        }
     }
 
     private Vector3 GetRandomOffScreenPosition()
@@ -142,16 +242,193 @@ public class GameSceneController : MonoBehaviour
         }
     }
 
+    private float lastAttackTime = 0f; // 마지막 공격 시간이 저장될 변수
+    private float attackCooldown = 0.3f; // 공격 쿨다운 시간 (0.3초)
+
     private void HandleBirdDamage(string color)
     {
+        // 쿨다운 시간이 지나지 않았으면 공격을 무시
+        if (Time.time - lastAttackTime < attackCooldown)
+        {
+            return;
+        }
+
+        // 현재 씬에 있는 모든 BirdController를 찾고, 색상이 일치하는 새에만 데미지 적용
         BirdController[] birds = FindObjectsOfType<BirdController>();
+        bool damageApplied = false;
+
         foreach (var bird in birds)
         {
+            // 새의 색상과 사용자가 입력한 키에 해당하는 색상이 일치할 때만 데미지 적용
             if (bird.BirdColor == color)
             {
                 bird.TakeDamage();
-                break;
+                Debug.Log($"Bird Color: {color}, Current HP: {bird.GetCurrentHP()}");
+                soundController.PlaySound(1);
+
+                // 공격받은 새에게 깜빡임 애니메이션 적용
+                StartCoroutine(BlinkBird(bird));
+
+                // 새가 죽었을 때, ActionText 애니메이션 표시
+                if (bird.GetCurrentHP() <= 0)
+                {
+                    float elapsedTime = Time.time - bird.SpawnTime;
+                    if (elapsedTime < 2f)
+                    {
+                        DisplayActionText("Perfect");
+                    }
+                    else if (elapsedTime < 4f)
+                    {
+                        DisplayActionText("Great");
+                    }
+                    else
+                    {
+                        DisplayActionText("Good");
+                    }
+                }
+
+                damageApplied = true; // 데미지가 적용되었음을 표시
             }
         }
+
+        // 데미지가 적용된 경우 공격 애니메이션 실행 및 쿨다운 시간 업데이트
+        if (damageApplied)
+        {
+            PlayAttackAnimation();
+            lastAttackTime = Time.time; // 마지막 공격 시간 업데이트
+        }
+    }
+
+    private IEnumerator BlinkBird(BirdController bird)
+    {
+        SpriteRenderer renderer = bird.GetComponent<SpriteRenderer>();
+
+        if (renderer == null) yield break; // SpriteRenderer가 없는 경우 코루틴 종료
+
+        for (int i = 0; i < 2; i++)
+        {
+            if (renderer != null) // renderer가 존재하는지 확인
+            {
+                renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, 0); // 투명하게
+            }
+            yield return new WaitForSeconds(0.1f);
+
+            if (renderer != null) // renderer가 존재하는지 확인
+            {
+                renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, 1); // 다시 원래대로
+            }
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    public void SkipTutorial()
+    {
+        if (tutorialCoroutine != null)
+        {
+            StopCoroutine(tutorialCoroutine); // 튜토리얼 시퀀스 중단
+        }
+
+        tutorialText.text = ""; // 튜토리얼 텍스트 초기화
+        StartCoroutine(FadeOutCanvasGroup(dimCanvasGroup, 1.0f)); // Dim 화면 페이드 아웃
+        StartCoroutine(SpawnBirds()); // 바로 게임 시작
+
+        Debug.Log("튜토리얼이 스킵되었습니다.");
+    }
+
+    private void PlayAttackAnimation()
+    {
+        // AttackTrigger 발동
+        characterAnimator.SetTrigger("AttackTrigger");
+    }
+
+    public void TakeDamage(int amount)
+    {
+        playerHP -= amount;
+        hpText.text = $"{playerHP}";  // .text 프로퍼티를 통해 텍스트 설정
+        Debug.Log($"Player HP: {playerHP}");
+        StartCoroutine(BlinkCharacter()); // 플레이어 깜빡임 효과
+
+        if (playerHP <= 0)
+        {
+            Debug.Log("Game Over");
+            // 게임 오버 처리 로직 추가
+        }
+    }
+
+    private IEnumerator BlinkCharacter()
+    {
+        SpriteRenderer renderer = character.GetComponent<SpriteRenderer>();
+        for (int i = 0; i < 2; i++)
+        {
+            renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, 0); // 투명하게
+            yield return new WaitForSeconds(0.1f);
+            renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, 1); // 다시 원래대로
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    public void DisplayActionText(string actionType)
+    {
+        GameObject actionText = null;
+
+        switch (actionType)
+        {
+            case "Perfect":
+                actionText = actionTextPerfect;
+                break;
+            case "Great":
+                actionText = actionTextGreat;
+                break;
+            case "Good":
+                actionText = actionTextGood;
+                break;
+        }
+
+        if (actionText != null)
+        {
+            StartCoroutine(AnimateActionText(actionText));
+        }
+    }
+
+    private IEnumerator AnimateActionText(GameObject actionText)
+    {
+        actionText.SetActive(true);
+        CanvasGroup canvasGroup = actionText.GetComponent<CanvasGroup>();
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 0;
+        }
+
+        RectTransform rectTransform = actionText.GetComponent<RectTransform>();
+        Vector3 startPos = rectTransform.localPosition;
+        Vector3 endPos = new Vector3(startPos.x, startPos.y + 50, startPos.z); // 50만큼 올라가도록 설정
+
+        float duration = 0.3f; // 더 빠른 애니메이션을 위해 duration을 줄임
+        float elapsed = 0f;
+
+        // Alpha와 위치 애니메이션
+        while (elapsed < duration)
+        {
+            canvasGroup.alpha = Mathf.Lerp(0, 1, elapsed / duration);
+            rectTransform.localPosition = Vector3.Lerp(startPos, endPos, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        canvasGroup.alpha = 1;
+        rectTransform.localPosition = endPos;
+        yield return new WaitForSeconds(0.3f); // 더 짧은 시간동안 표시
+
+        // 사라지는 애니메이션
+        elapsed = 0f;
+        while (elapsed < duration)
+        {
+            canvasGroup.alpha = Mathf.Lerp(1, 0, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        canvasGroup.alpha = 0;
+        actionText.SetActive(false);
     }
 }
