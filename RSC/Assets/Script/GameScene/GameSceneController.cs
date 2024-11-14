@@ -22,6 +22,7 @@ public class GameSceneController : MonoBehaviour
     [SerializeField] private GameObject actionTextPerfect;
 
     [SerializeField] private CanvasGroup GameOverCanvasGroup;
+    [SerializeField] private Transform parentObject; // 새가 생성될 부모 오브젝트
 
     private Animator characterAnimator;
     private Dictionary<KeyCode, string> keyColorMap = new Dictionary<KeyCode, string>
@@ -180,12 +181,13 @@ public class GameSceneController : MonoBehaviour
 
     private IEnumerator SpawnBirds()
     {
-        while (true)
+        while (isGameStarted) // 게임이 시작된 상태일 때만 새를 소환
         {
             SpawnRandomBird();
             yield return new WaitForSeconds(birdSpawnInterval);
         }
     }
+
 
     private void SpawnRandomBird()
     {
@@ -210,8 +212,9 @@ public class GameSceneController : MonoBehaviour
             birdColor = birdColors[randomIndex];
         }
 
-        birdInstance = Instantiate(birdPrefabs[randomIndex]);
-        birdInstance.transform.position = spawnPosition;
+        // Instantiate 메서드에서 부모 오브젝트를 설정
+        birdInstance = Instantiate(birdPrefabs[randomIndex], spawnPosition, Quaternion.identity, parentObject);
+
         birdInstance.transform.localScale = new Vector3(spawnLeft ? -0.3f : 0.3f, 0.3f, 0.3f);
 
         BirdController birdController = birdInstance.GetComponent<BirdController>();
@@ -379,14 +382,22 @@ public class GameSceneController : MonoBehaviour
         }
     }
 
-    // 게임 오버 처리 메서드
-    private void GameOver()
+    public void GameOver()
     {
-        Debug.Log("Game Over");
+        isGameStarted = false; // 게임이 종료 상태임을 표시
         gameTimer.enabled = false; // 타이머 중지
-        isGameStarted = false; // 게임 상태 변경하여 키 입력 및 액션 비활성화
-        StartCoroutine(FadeInCanvasGroup(GameOverCanvasGroup, 1.0f)); // GameOverCanvasGroup 페이드 인
+        StartCoroutine(FadeInCanvasGroup(GameOverCanvasGroup, 1.0f)); // GameOverCanvasGroup 
+        GameOverCanvasGroup.gameObject.SetActive(true); // GameOver 화면 표시
+
+        // BirdParent 하위 모든 오브젝트 삭제
+        foreach (Transform child in parentObject)
+        {
+            Destroy(child.gameObject);
+        }
+
+        Debug.Log("게임 오버");
     }
+
 
     private IEnumerator BlinkCharacter()
     {
