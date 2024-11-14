@@ -394,6 +394,24 @@ public class GameSceneController : MonoBehaviour
         }
     }
 
+    public void DisplayActionTextBasedOnTime(BirdController bird)
+    {
+        float elapsedTime = Time.time - bird.SpawnTime;
+        if (elapsedTime < 2f)
+        {
+            DisplayActionText("Perfect");
+        }
+        else if (elapsedTime < 4f)
+        {
+            DisplayActionText("Great");
+        }
+        else
+        {
+            DisplayActionText("Good");
+        }
+    }
+
+
     private IEnumerator AnimateActionText(GameObject actionText)
     {
         // 기존에 표시된 모든 ActionText를 숨김
