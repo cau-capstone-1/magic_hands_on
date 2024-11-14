@@ -203,20 +203,20 @@ public class GameSceneController : MonoBehaviour
         Debug.Log($"Spawned Bird Color: {birdColor}, Initial HP: 3");
     }
 
-    public void DisplayActionTextBasedOnTime(BirdController bird)
+    // 맞춘 새의 개수에 따라 ActionText 표시
+    private void DisplayActionTextBasedOnHits(int hitCount)
     {
-        float elapsedTime = Time.time - bird.SpawnTime;
-        if (elapsedTime < 2f)
+        if (hitCount == 1)
         {
-            DisplayActionText("Perfect");
+            DisplayActionText("Good");
         }
-        else if (elapsedTime < 4f)
+        else if (hitCount == 2)
         {
             DisplayActionText("Great");
         }
-        else
+        else if (hitCount >= 3)
         {
-            DisplayActionText("Good");
+            DisplayActionText("Perfect");
         }
     }
 
@@ -261,6 +261,7 @@ public class GameSceneController : MonoBehaviour
     {
         BirdController[] birds = FindObjectsOfType<BirdController>();
         bool damageApplied = false;
+        int hitCount = 0; // 맞춘 새의 개수
 
         foreach (var bird in birds)
         {
@@ -273,31 +274,14 @@ public class GameSceneController : MonoBehaviour
                 // 공격받은 새에게 깜빡임 애니메이션 적용
                 StartCoroutine(BlinkBird(bird));
 
-                // 새가 죽었을 때, ActionText 애니메이션 표시
-                if (bird.GetCurrentHP() <= 0)
-                {
-                    float elapsedTime = Time.time - bird.SpawnTime;
-                    if (elapsedTime < 2f)
-                    {
-                        DisplayActionText("Perfect");
-                    }
-                    else if (elapsedTime < 4f)
-                    {
-                        DisplayActionText("Great");
-                    }
-                    else
-                    {
-                        DisplayActionText("Good");
-                    }
-                }
-
-                damageApplied = true; // 데미지가 적용되었음을 표시
+                hitCount++; // 맞춘 새의 개수 증가
+                damageApplied = true;
             }
         }
 
+        // 공격 방향 설정
         if (damageApplied)
         {
-            // 색상에 따라 캐릭터의 방향을 설정
             if (color == "Yellow" || color == "Black")
             {
                 character.transform.localScale = new Vector3(-108, 108, 108); // 왼쪽을 바라봄
@@ -308,6 +292,13 @@ public class GameSceneController : MonoBehaviour
             }
 
             PlayAttackAnimation();
+            DisplayActionTextBasedOnHits(hitCount); // 맞춘 새의 개수에 따라 텍스트 표시
+        }
+        else
+        {
+            // 맞춘 새가 없을 경우 데미지 입기
+            TakeDamage(1);
+            Debug.Log("해당 색상의 새가 없어 플레이어가 피해를 입었습니다.");
         }
     }
 
@@ -405,6 +396,9 @@ public class GameSceneController : MonoBehaviour
 
     private IEnumerator AnimateActionText(GameObject actionText)
     {
+        // 기존에 표시된 모든 ActionText를 숨김
+        HideAllActionTexts();
+
         actionText.SetActive(true);
         CanvasGroup canvasGroup = actionText.GetComponent<CanvasGroup>();
         if (canvasGroup != null)
@@ -412,25 +406,19 @@ public class GameSceneController : MonoBehaviour
             canvasGroup.alpha = 0;
         }
 
-        RectTransform rectTransform = actionText.GetComponent<RectTransform>();
-        Vector3 startPos = rectTransform.localPosition;
-        Vector3 endPos = new Vector3(startPos.x, startPos.y + 50, startPos.z); // 50만큼 올라가도록 설정
-
-        float duration = 0.3f; // 더 빠른 애니메이션을 위해 duration을 줄임
+        float duration = 0.3f; // 투명도 변경 애니메이션 시간
         float elapsed = 0f;
 
-        // Alpha와 위치 애니메이션
+        // Alpha 애니메이션 (투명도 조정만 수행)
         while (elapsed < duration)
         {
             canvasGroup.alpha = Mathf.Lerp(0, 1, elapsed / duration);
-            rectTransform.localPosition = Vector3.Lerp(startPos, endPos, elapsed / duration);
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        canvasGroup.alpha = 1;
-        rectTransform.localPosition = endPos;
-        yield return new WaitForSeconds(0.3f); // 더 짧은 시간동안 표시
+        canvasGroup.alpha = 1; // 최종적으로 alpha를 1로 설정
+        yield return new WaitForSeconds(0.3f); // 짧은 시간 동안 표시 유지
 
         // 사라지는 애니메이션
         elapsed = 0f;
@@ -443,5 +431,18 @@ public class GameSceneController : MonoBehaviour
 
         canvasGroup.alpha = 0;
         actionText.SetActive(false);
+    }
+
+    // 모든 ActionText를 숨기는 함수
+    private void HideAllActionTexts()
+    {
+        actionTextGood.SetActive(false);
+        actionTextGreat.SetActive(false);
+        actionTextPerfect.SetActive(false);
+
+        // 모든 텍스트의 CanvasGroup 투명도 초기화
+        actionTextGood.GetComponent<CanvasGroup>().alpha = 0;
+        actionTextGreat.GetComponent<CanvasGroup>().alpha = 0;
+        actionTextPerfect.GetComponent<CanvasGroup>().alpha = 0;
     }
 }
