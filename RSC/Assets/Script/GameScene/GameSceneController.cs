@@ -24,6 +24,11 @@ public class GameSceneController : MonoBehaviour
     [SerializeField] private CanvasGroup GameOverCanvasGroup;
     [SerializeField] private Transform parentObject; // 새가 생성될 부모 오브젝트
 
+    [SerializeField] private Slider leftSlider; // 왼쪽 슬라이더
+    [SerializeField] private Slider rightSlider; // 오른쪽 슬라이더
+    [SerializeField] private Button leftSliderButton; // 왼쪽 슬라이더의 버튼
+    [SerializeField] private Button rightSliderButton; // 오른쪽 슬라이더의 버튼
+
     private Animator characterAnimator;
     private Dictionary<KeyCode, string> keyColorMap = new Dictionary<KeyCode, string>
     {
@@ -47,6 +52,18 @@ public class GameSceneController : MonoBehaviour
         dimCanvasGroup.alpha = 1;
         GameOverCanvasGroup.alpha = 0; // 게임 시작 시 GameOverCanvasGroup 숨기기
         GameOverCanvasGroup.gameObject.SetActive(false);
+
+        // 슬라이더 초기화
+        leftSlider.value = 0;
+        rightSlider.value = 0;
+
+        // 버튼 비활성화 (게이지가 가득 찰 때만 활성화됨)
+        leftSliderButton.interactable = false;
+        rightSliderButton.interactable = false;
+
+        // 버튼 이벤트 설정
+        leftSliderButton.onClick.AddListener(DealDamageToAllBirds);
+        rightSliderButton.onClick.AddListener(HealPlayerHP);
 
         // ActionText의 투명도를 0으로 초기화하고 위치를 설정
         InitializeActionText(actionTextGood);
@@ -300,6 +317,24 @@ public class GameSceneController : MonoBehaviour
 
                 hitCount++; // 맞춘 새의 개수 증가
                 damageApplied = true;
+
+                // 슬라이더 게이지 증가
+                if (color == "Yellow" || color == "Black")
+                {
+                    leftSlider.value += 6; // 왼쪽 슬라이더 게이지 증가
+                    if (leftSlider.value >= 100)
+                    {
+                        leftSliderButton.interactable = true; // 게이지가 가득 차면 버튼 활성화
+                    }
+                }
+                else if (color == "Green" || color == "Blue")
+                {
+                    rightSlider.value += 6; // 오른쪽 슬라이더 게이지 증가
+                    if (rightSlider.value >= 100)
+                    {
+                        rightSliderButton.interactable = true; // 게이지가 가득 차면 버튼 활성화
+                    }
+                }
             }
         }
 
@@ -326,6 +361,28 @@ public class GameSceneController : MonoBehaviour
         }
     }
 
+    private void DealDamageToAllBirds()
+    {
+        BirdController[] birds = FindObjectsOfType<BirdController>();
+        foreach (var bird in birds)
+        {
+            bird.TakeDamage(); // 모든 새에게 데미지 1 주기
+            Debug.Log($"All Birds Damaged, Bird Color: {bird.BirdColor}, Current HP: {bird.GetCurrentHP()}");
+        }
+
+        leftSlider.value = 0; // 슬라이더 초기화
+        leftSliderButton.interactable = false;
+    }
+
+    private void HealPlayerHP()
+    {
+        playerHP += 2;
+        hpText.text = $"{playerHP}";
+        Debug.Log($"Player HP increased to: {playerHP}");
+
+        rightSlider.value = 0; // 슬라이더 초기화
+        rightSliderButton.interactable = false;
+    }
 
     private IEnumerator BlinkBird(BirdController bird)
     {
