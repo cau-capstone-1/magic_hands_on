@@ -2,28 +2,33 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 public class TitleAnimationController : MonoBehaviour
 {
-    public RectTransform titleText; // Title_Text ¿ÀºêÁ§Æ®
-    public CanvasGroup buttonPlay; // Button_Play ¿ÀºêÁ§Æ®ÀÇ CanvasGroup
+    public RectTransform titleText; // Title_Text ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+    public CanvasGroup buttonPlay; // Button_Play ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ CanvasGroup
 
-    public float titleAnimationDuration = 1.0f; // Title_Text ¾Ö´Ï¸ÞÀÌ¼Ç ½Ã°£
-    public float buttonFadeInDuration = 1.0f; // Button_Play ÆäÀÌµåÀÎ ½Ã°£
-    public Vector3 titleStartPos; // Title_Text ½ÃÀÛ À§Ä¡
+    public float titleAnimationDuration = 1.0f; // Title_Text ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½Ã°ï¿½
+    public float buttonFadeInDuration = 1.0f; // Button_Play ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
+    public Vector3 titleStartPos; // Title_Text ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡
 
-    private Vector3 titleEndPos; // Title_Text ÃÖÁ¾ À§Ä¡
+    private Vector3 titleEndPos; // Title_Text ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡
     private Button playButton;
+    public Transform leftPenguinRect;
+    public Transform rightPenguinRect;
+    public SpriteRenderer leftPenguinRenderer;
+    public SpriteRenderer rightPenguinRenderer;
 
     private void Awake()
     {
-        // Title_Text¿Í Button_Play ¿ÀºêÁ§Æ®ÀÇ ÃÊ±â ¼³Á¤
+        // Title_Textï¿½ï¿½ Button_Play ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ê±ï¿½ ï¿½ï¿½ï¿½ï¿½
         titleEndPos = titleText.anchoredPosition;
         titleText.anchoredPosition = titleStartPos;
 
         buttonPlay.alpha = 0;
         playButton = buttonPlay.GetComponent<Button>();
-        playButton.interactable = false; // ÃÊ±â¿¡´Â ¹öÆ° ºñÈ°¼ºÈ­
+        playButton.interactable = false; // ï¿½Ê±â¿¡ï¿½ï¿½ ï¿½ï¿½Æ° ï¿½ï¿½È°ï¿½ï¿½È­
     }
 
     private void OnEnable()
@@ -33,28 +38,38 @@ public class TitleAnimationController : MonoBehaviour
 
     private IEnumerator PlayTitleAnimation()
     {
-        // Title_TextÀÇ À§Ä¡ ¾Ö´Ï¸ÞÀÌ¼Ç
+        // Title_Textï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½
         float elapsedTime = 0;
         while (elapsedTime < titleAnimationDuration)
         {
             elapsedTime += Time.deltaTime;
             float t = elapsedTime / titleAnimationDuration;
-            t = Mathf.SmoothStep(0, 1, t); // ºÎµå·¯¿î ÀÌÂ¡ È¿°ú
+            t = Mathf.SmoothStep(0, 1, t); // ï¿½Îµå·¯ï¿½ï¿½ ï¿½ï¿½Â¡ È¿ï¿½ï¿½
             titleText.anchoredPosition = Vector3.Lerp(titleStartPos, titleEndPos, t);
             yield return null;
         }
 
-        // Button_PlayÀÇ ÆäÀÌµåÀÎ ¾Ö´Ï¸ÞÀÌ¼Ç
+        // Button_Playï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½
         elapsedTime = 0;
+        float initialLeftX = leftPenguinRect.position.x;
+        float initialRightX = rightPenguinRect.position.x;
+        
         while (elapsedTime < buttonFadeInDuration)
         {
             elapsedTime += Time.deltaTime;
             float t = elapsedTime / buttonFadeInDuration;
             buttonPlay.alpha = Mathf.Lerp(0, 1, t);
+
+            leftPenguinRenderer.color = new Color(1, 1, 1, Mathf.Lerp(0, 1, t));
+            rightPenguinRenderer.color = new Color(1, 1, 1, Mathf.Lerp(0, 1, t));
+
+            leftPenguinRect.position = new Vector3(initialLeftX - Mathf.Lerp(0, 1, t), leftPenguinRect.position.y, leftPenguinRect.position.z);
+            rightPenguinRect.position = new Vector3(initialRightX + Mathf.Lerp(0, 1, t), rightPenguinRect.position.y, rightPenguinRect.position.z);
+            
             yield return null;
         }
 
-        // ¾Ö´Ï¸ÞÀÌ¼ÇÀÌ ³¡³­ ÈÄ ¹öÆ° È°¼ºÈ­
+        // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Æ° È°ï¿½ï¿½È­
         playButton.interactable = true;
     }
 }
