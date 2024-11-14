@@ -33,7 +33,7 @@ public class GameSceneController : MonoBehaviour
     };
 
     private Coroutine tutorialCoroutine;
-    private List<string> birdColors = new List<string> { "Yellow", "Black", "Green", "Blue", "Red", "Brown" };
+    private List<string> birdColors = new List<string> { "Yellow", "Black", "Green", "Blue" };
 
     private bool isGameStarted = false;
 
@@ -48,13 +48,8 @@ public class GameSceneController : MonoBehaviour
         InitializeActionText(actionTextGreat);
         InitializeActionText(actionTextPerfect);
 
-        tutorialCoroutine = StartCoroutine(TutorialSequence()); // 초기화
-
-        // 초기화 시 타이머 비활성화
-        gameTimer.enabled = false;
-
-        // 튜토리얼 시작
-        tutorialCoroutine = StartCoroutine(TutorialSequence());
+        // 튜토리얼 없이 바로 게임 시작
+        StartGame();
     }
 
     private void StartGame()
@@ -178,21 +173,34 @@ public class GameSceneController : MonoBehaviour
 
     private void SpawnRandomBird()
     {
-        int randomIndex = Random.Range(0, birdPrefabs.Count);
-        GameObject birdInstance = Instantiate(birdPrefabs[randomIndex]);
+        int randomIndex;
+        GameObject birdInstance;
         Vector3 spawnPosition = GetRandomOffScreenPosition();
 
-        // 좌우 반전 적용
+        // 좌우 반전 및 색상 설정
         bool spawnLeft = spawnPosition.x < 0;
+        string birdColor;
+
+        if (spawnLeft)
+        {
+            // 왼쪽에서는 노랑, 검정 새 중 하나 소환
+            randomIndex = Random.Range(0, 2); // 0 또는 1
+            birdColor = birdColors[randomIndex];
+        }
+        else
+        {
+            // 오른쪽에서는 초록, 파랑 새 중 하나 소환
+            randomIndex = Random.Range(2, 4); // 2 또는 3
+            birdColor = birdColors[randomIndex];
+        }
+
+        birdInstance = Instantiate(birdPrefabs[randomIndex]);
         birdInstance.transform.position = spawnPosition;
         birdInstance.transform.localScale = new Vector3(spawnLeft ? -0.3f : 0.3f, 0.3f, 0.3f);
 
         BirdController birdController = birdInstance.GetComponent<BirdController>();
-
-        // 무작위 색상 설정 및 초기 HP 설정, 생성 시간 전달
-        string randomColor = birdColors[Random.Range(0, birdColors.Count)];
-        birdController.Initialize(randomColor, character.transform, 3, Time.time); // 생성 시간 추가
-        Debug.Log($"Spawned Bird Color: {randomColor}, Initial HP: 3");
+        birdController.Initialize(birdColor, character.transform, 3, Time.time); // 생성 시간 전달
+        Debug.Log($"Spawned Bird Color: {birdColor}, Initial HP: 3");
     }
 
     public void DisplayActionTextBasedOnTime(BirdController bird)
@@ -247,19 +255,13 @@ public class GameSceneController : MonoBehaviour
 
     private void HandleBirdDamage(string color)
     {
-        // 쿨다운 시간이 지나지 않았으면 공격을 무시
-        if (Time.time - lastAttackTime < attackCooldown)
-        {
-            return;
-        }
-
-        // 현재 씬에 있는 모든 BirdController를 찾고, 색상이 일치하는 새에만 데미지 적용
+        // 현재 씬에 있는 모든 BirdController를 찾고, 색상이 일치하는 새에 데미지 적용
         BirdController[] birds = FindObjectsOfType<BirdController>();
         bool damageApplied = false;
 
         foreach (var bird in birds)
         {
-            // 새의 색상과 사용자가 입력한 키에 해당하는 색상이 일치할 때만 데미지 적용
+            // 새의 색상과 사용자가 입력한 키에 해당하는 색상이 일치할 때 데미지 적용
             if (bird.BirdColor == color)
             {
                 bird.TakeDamage();
@@ -291,11 +293,10 @@ public class GameSceneController : MonoBehaviour
             }
         }
 
-        // 데미지가 적용된 경우 공격 애니메이션 실행 및 쿨다운 시간 업데이트
+        // 데미지가 적용된 경우 공격 애니메이션 실행
         if (damageApplied)
         {
             PlayAttackAnimation();
-            lastAttackTime = Time.time; // 마지막 공격 시간 업데이트
         }
     }
 
