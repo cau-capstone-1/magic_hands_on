@@ -21,6 +21,8 @@ public class GameSceneController : MonoBehaviour
     [SerializeField] private GameObject actionTextGreat;
     [SerializeField] private GameObject actionTextPerfect;
 
+    [SerializeField] private CanvasGroup GameOverCanvasGroup;
+
     private Animator characterAnimator;
     private Dictionary<KeyCode, string> keyColorMap = new Dictionary<KeyCode, string>
     {
@@ -42,6 +44,8 @@ public class GameSceneController : MonoBehaviour
         characterAnimator = character.GetComponent<Animator>(); // Animator 컴포넌트 가져오기
         tutorialCanvasGroup.alpha = 0;
         dimCanvasGroup.alpha = 1;
+        GameOverCanvasGroup.alpha = 0; // 게임 시작 시 GameOverCanvasGroup 숨기기
+        GameOverCanvasGroup.gameObject.SetActive(false);
 
         // ActionText의 투명도를 0으로 초기화하고 위치를 설정
         InitializeActionText(actionTextGood);
@@ -50,6 +54,16 @@ public class GameSceneController : MonoBehaviour
 
         // 튜토리얼 없이 바로 게임 시작
         StartGame();
+
+        // idle 애니메이션 반복 재생
+        PlayIdleAnimation();
+    }
+
+    // Idle 애니메이션을 반복 재생하는 메서드
+    private void PlayIdleAnimation()
+    {
+        characterAnimator.Play("penguin_idle"); // Animator에서 penguin_idle 애니메이션 실행
+        characterAnimator.SetBool("isIdle", true); // 계속 반복되도록 isIdle 플래그 설정
     }
 
     private void StartGame()
@@ -128,8 +142,10 @@ public class GameSceneController : MonoBehaviour
         yield return new WaitForSeconds(delay);
     }
 
+    // FadeIn 메서드로 GameOverCanvasGroup 보이게 하기
     private IEnumerator FadeInCanvasGroup(CanvasGroup canvasGroup, float duration)
     {
+        canvasGroup.gameObject.SetActive(true); // 캔버스 그룹 활성화
         float elapsedTime = 0f;
         while (elapsedTime < duration)
         {
@@ -236,6 +252,8 @@ public class GameSceneController : MonoBehaviour
 
     private void Update()
     {
+        if (!isGameStarted) return; // 게임이 시작된 상태에서만 업데이트
+
         // 키 입력을 즉각적으로 감지하여 HandleBirdDamage에 전달
         if (Input.GetKeyDown(KeyCode.Z)) HandleBirdDamage("Yellow");
         if (Input.GetKeyDown(KeyCode.X)) HandleBirdDamage("Black");
@@ -257,8 +275,11 @@ public class GameSceneController : MonoBehaviour
     private float lastAttackTime = 0f; // 마지막 공격 시간이 저장될 변수
     private float attackCooldown = 0.3f; // 공격 쿨다운 시간 (0.3초)
 
+    // HandleBirdDamage 메서드에서도 게임 오버 상태 확인 추가
     private void HandleBirdDamage(string color)
     {
+        if (!isGameStarted) return; // 게임 오버 상태에서는 새에게 피해를 줄 수 없음
+
         BirdController[] birds = FindObjectsOfType<BirdController>();
         bool damageApplied = false;
         int hitCount = 0; // 맞춘 새의 개수
@@ -354,9 +375,17 @@ public class GameSceneController : MonoBehaviour
 
         if (playerHP <= 0)
         {
-            Debug.Log("Game Over");
-            // 게임 오버 처리 로직 추가
+            GameOver(); // 게임 오버 처리 메서드 호출
         }
+    }
+
+    // 게임 오버 처리 메서드
+    private void GameOver()
+    {
+        Debug.Log("Game Over");
+        gameTimer.enabled = false; // 타이머 중지
+        isGameStarted = false; // 게임 상태 변경하여 키 입력 및 액션 비활성화
+        StartCoroutine(FadeInCanvasGroup(GameOverCanvasGroup, 1.0f)); // GameOverCanvasGroup 페이드 인
     }
 
     private IEnumerator BlinkCharacter()
