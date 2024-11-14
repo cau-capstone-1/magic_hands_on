@@ -236,7 +236,11 @@ public class GameSceneController : MonoBehaviour
 
     private void Update()
     {
-        CheckInputForBirds();
+        // 키 입력을 즉각적으로 감지하여 HandleBirdDamage에 전달
+        if (Input.GetKeyDown(KeyCode.Z)) HandleBirdDamage("Yellow");
+        if (Input.GetKeyDown(KeyCode.X)) HandleBirdDamage("Black");
+        if (Input.GetKeyDown(KeyCode.C)) HandleBirdDamage("Green");
+        if (Input.GetKeyDown(KeyCode.V)) HandleBirdDamage("Blue");
     }
 
     private void CheckInputForBirds()
@@ -255,13 +259,11 @@ public class GameSceneController : MonoBehaviour
 
     private void HandleBirdDamage(string color)
     {
-        // 현재 씬에 있는 모든 BirdController를 찾고, 색상이 일치하는 새에 데미지 적용
         BirdController[] birds = FindObjectsOfType<BirdController>();
         bool damageApplied = false;
 
         foreach (var bird in birds)
         {
-            // 새의 색상과 사용자가 입력한 키에 해당하는 색상이 일치할 때 데미지 적용
             if (bird.BirdColor == color)
             {
                 bird.TakeDamage();
@@ -293,12 +295,22 @@ public class GameSceneController : MonoBehaviour
             }
         }
 
-        // 데미지가 적용된 경우 공격 애니메이션 실행
         if (damageApplied)
         {
+            // 색상에 따라 캐릭터의 방향을 설정
+            if (color == "Yellow" || color == "Black")
+            {
+                character.transform.localScale = new Vector3(-108, 108, 108); // 왼쪽을 바라봄
+            }
+            else if (color == "Green" || color == "Blue")
+            {
+                character.transform.localScale = new Vector3(108, 108, 108); // 오른쪽을 바라봄
+            }
+
             PlayAttackAnimation();
         }
     }
+
 
     private IEnumerator BlinkBird(BirdController bird)
     {
