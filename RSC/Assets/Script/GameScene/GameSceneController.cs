@@ -21,6 +21,8 @@ public class GameSceneController : MonoBehaviour
     [SerializeField] private GameObject actionTextGreat;
     [SerializeField] private GameObject actionTextPerfect;
 
+    [SerializeField] private CanvasGroup GameOverCanvasGroup;
+
     private Animator characterAnimator;
     private Dictionary<KeyCode, string> keyColorMap = new Dictionary<KeyCode, string>
     {
@@ -33,7 +35,7 @@ public class GameSceneController : MonoBehaviour
     };
 
     private Coroutine tutorialCoroutine;
-    private List<string> birdColors = new List<string> { "Yellow", "Black", "Green", "Blue", "Red", "Brown" };
+    private List<string> birdColors = new List<string> { "Yellow", "Black", "Green", "Blue" };
 
     private bool isGameStarted = false;
 
@@ -42,19 +44,26 @@ public class GameSceneController : MonoBehaviour
         characterAnimator = character.GetComponent<Animator>(); // Animator 컴포넌트 가져오기
         tutorialCanvasGroup.alpha = 0;
         dimCanvasGroup.alpha = 1;
+        GameOverCanvasGroup.alpha = 0; // 게임 시작 시 GameOverCanvasGroup 숨기기
+        GameOverCanvasGroup.gameObject.SetActive(false);
 
         // ActionText의 투명도를 0으로 초기화하고 위치를 설정
         InitializeActionText(actionTextGood);
         InitializeActionText(actionTextGreat);
         InitializeActionText(actionTextPerfect);
 
-        tutorialCoroutine = StartCoroutine(TutorialSequence()); // 초기화
+        // 튜토리얼 없이 바로 게임 시작
+        StartGame();
 
-        // 초기화 시 타이머 비활성화
-        gameTimer.enabled = false;
+        // idle 애니메이션 반복 재생
+        PlayIdleAnimation();
+    }
 
-        // 튜토리얼 시작
-        tutorialCoroutine = StartCoroutine(TutorialSequence());
+    // Idle 애니메이션을 반복 재생하는 메서드
+    private void PlayIdleAnimation()
+    {
+        characterAnimator.Play("penguin_idle"); // Animator에서 penguin_idle 애니메이션 실행
+        characterAnimator.SetBool("isIdle", true); // 계속 반복되도록 isIdle 플래그 설정
     }
 
     private void StartGame()
@@ -133,8 +142,10 @@ public class GameSceneController : MonoBehaviour
         yield return new WaitForSeconds(delay);
     }
 
+    // FadeIn 메서드로 GameOverCanvasGroup 보이게 하기
     private IEnumerator FadeInCanvasGroup(CanvasGroup canvasGroup, float duration)
     {
+        canvasGroup.gameObject.SetActive(true); // 캔버스 그룹 활성화
         float elapsedTime = 0f;
         while (elapsedTime < duration)
         {
@@ -178,37 +189,50 @@ public class GameSceneController : MonoBehaviour
 
     private void SpawnRandomBird()
     {
-        int randomIndex = Random.Range(0, birdPrefabs.Count);
-        GameObject birdInstance = Instantiate(birdPrefabs[randomIndex]);
+        int randomIndex;
+        GameObject birdInstance;
         Vector3 spawnPosition = GetRandomOffScreenPosition();
 
-        // 좌우 반전 적용
+        // 좌우 반전 및 색상 설정
         bool spawnLeft = spawnPosition.x < 0;
+        string birdColor;
+
+        if (spawnLeft)
+        {
+            // 왼쪽에서는 노랑, 검정 새 중 하나 소환
+            randomIndex = Random.Range(0, 2); // 0 또는 1
+            birdColor = birdColors[randomIndex];
+        }
+        else
+        {
+            // 오른쪽에서는 초록, 파랑 새 중 하나 소환
+            randomIndex = Random.Range(2, 4); // 2 또는 3
+            birdColor = birdColors[randomIndex];
+        }
+
+        birdInstance = Instantiate(birdPrefabs[randomIndex]);
         birdInstance.transform.position = spawnPosition;
         birdInstance.transform.localScale = new Vector3(spawnLeft ? -0.3f : 0.3f, 0.3f, 0.3f);
 
         BirdController birdController = birdInstance.GetComponent<BirdController>();
-
-        // 무작위 색상 설정 및 초기 HP 설정, 생성 시간 전달
-        string randomColor = birdColors[Random.Range(0, birdColors.Count)];
-        birdController.Initialize(randomColor, character.transform, 3, Time.time); // 생성 시간 추가
-        Debug.Log($"Spawned Bird Color: {randomColor}, Initial HP: 3");
+        birdController.Initialize(birdColor, character.transform, 3, Time.time); // 생성 시간 전달
+        Debug.Log($"Spawned Bird Color: {birdColor}, Initial HP: 3");
     }
 
-    public void DisplayActionTextBasedOnTime(BirdController bird)
+    // 맞춘 새의 개수에 따라 ActionText 표시
+    private void DisplayActionTextBasedOnHits(int hitCount)
     {
-        float elapsedTime = Time.time - bird.SpawnTime;
-        if (elapsedTime < 2f)
+        if (hitCount == 1)
         {
-            DisplayActionText("Perfect");
+            DisplayActionText("Good");
         }
-        else if (elapsedTime < 4f)
+        else if (hitCount == 2)
         {
             DisplayActionText("Great");
         }
-        else
+        else if (hitCount >= 3)
         {
-            DisplayActionText("Good");
+            DisplayActionText("Perfect");
         }
     }
 
@@ -228,7 +252,13 @@ public class GameSceneController : MonoBehaviour
 
     private void Update()
     {
-        CheckInputForBirds();
+        if (!isGameStarted) return; // 게임이 시작된 상태에서만 업데이트
+
+        // 키 입력을 즉각적으로 감지하여 HandleBirdDamage에 전달
+        if (Input.GetKeyDown(KeyCode.Z)) HandleBirdDamage("Yellow");
+        if (Input.GetKeyDown(KeyCode.X)) HandleBirdDamage("Black");
+        if (Input.GetKeyDown(KeyCode.C)) HandleBirdDamage("Green");
+        if (Input.GetKeyDown(KeyCode.V)) HandleBirdDamage("Blue");
     }
 
     private void CheckInputForBirds()
@@ -245,21 +275,17 @@ public class GameSceneController : MonoBehaviour
     private float lastAttackTime = 0f; // 마지막 공격 시간이 저장될 변수
     private float attackCooldown = 0.3f; // 공격 쿨다운 시간 (0.3초)
 
+    // HandleBirdDamage 메서드에서도 게임 오버 상태 확인 추가
     private void HandleBirdDamage(string color)
     {
-        // 쿨다운 시간이 지나지 않았으면 공격을 무시
-        if (Time.time - lastAttackTime < attackCooldown)
-        {
-            return;
-        }
+        if (!isGameStarted) return; // 게임 오버 상태에서는 새에게 피해를 줄 수 없음
 
-        // 현재 씬에 있는 모든 BirdController를 찾고, 색상이 일치하는 새에만 데미지 적용
         BirdController[] birds = FindObjectsOfType<BirdController>();
         bool damageApplied = false;
+        int hitCount = 0; // 맞춘 새의 개수
 
         foreach (var bird in birds)
         {
-            // 새의 색상과 사용자가 입력한 키에 해당하는 색상이 일치할 때만 데미지 적용
             if (bird.BirdColor == color)
             {
                 bird.TakeDamage();
@@ -269,35 +295,34 @@ public class GameSceneController : MonoBehaviour
                 // 공격받은 새에게 깜빡임 애니메이션 적용
                 StartCoroutine(BlinkBird(bird));
 
-                // 새가 죽었을 때, ActionText 애니메이션 표시
-                if (bird.GetCurrentHP() <= 0)
-                {
-                    float elapsedTime = Time.time - bird.SpawnTime;
-                    if (elapsedTime < 2f)
-                    {
-                        DisplayActionText("Perfect");
-                    }
-                    else if (elapsedTime < 4f)
-                    {
-                        DisplayActionText("Great");
-                    }
-                    else
-                    {
-                        DisplayActionText("Good");
-                    }
-                }
-
-                damageApplied = true; // 데미지가 적용되었음을 표시
+                hitCount++; // 맞춘 새의 개수 증가
+                damageApplied = true;
             }
         }
 
-        // 데미지가 적용된 경우 공격 애니메이션 실행 및 쿨다운 시간 업데이트
+        // 공격 방향 설정
         if (damageApplied)
         {
+            if (color == "Yellow" || color == "Black")
+            {
+                character.transform.localScale = new Vector3(-108, 108, 108); // 왼쪽을 바라봄
+            }
+            else if (color == "Green" || color == "Blue")
+            {
+                character.transform.localScale = new Vector3(108, 108, 108); // 오른쪽을 바라봄
+            }
+
             PlayAttackAnimation();
-            lastAttackTime = Time.time; // 마지막 공격 시간 업데이트
+            DisplayActionTextBasedOnHits(hitCount); // 맞춘 새의 개수에 따라 텍스트 표시
+        }
+        else
+        {
+            // 맞춘 새가 없을 경우 데미지 입기
+            TakeDamage(1);
+            Debug.Log("해당 색상의 새가 없어 플레이어가 피해를 입었습니다.");
         }
     }
+
 
     private IEnumerator BlinkBird(BirdController bird)
     {
@@ -350,9 +375,17 @@ public class GameSceneController : MonoBehaviour
 
         if (playerHP <= 0)
         {
-            Debug.Log("Game Over");
-            // 게임 오버 처리 로직 추가
+            GameOver(); // 게임 오버 처리 메서드 호출
         }
+    }
+
+    // 게임 오버 처리 메서드
+    private void GameOver()
+    {
+        Debug.Log("Game Over");
+        gameTimer.enabled = false; // 타이머 중지
+        isGameStarted = false; // 게임 상태 변경하여 키 입력 및 액션 비활성화
+        StartCoroutine(FadeInCanvasGroup(GameOverCanvasGroup, 1.0f)); // GameOverCanvasGroup 페이드 인
     }
 
     private IEnumerator BlinkCharacter()
@@ -390,8 +423,29 @@ public class GameSceneController : MonoBehaviour
         }
     }
 
+    public void DisplayActionTextBasedOnTime(BirdController bird)
+    {
+        float elapsedTime = Time.time - bird.SpawnTime;
+        if (elapsedTime < 2f)
+        {
+            DisplayActionText("Perfect");
+        }
+        else if (elapsedTime < 4f)
+        {
+            DisplayActionText("Great");
+        }
+        else
+        {
+            DisplayActionText("Good");
+        }
+    }
+
+
     private IEnumerator AnimateActionText(GameObject actionText)
     {
+        // 기존에 표시된 모든 ActionText를 숨김
+        HideAllActionTexts();
+
         actionText.SetActive(true);
         CanvasGroup canvasGroup = actionText.GetComponent<CanvasGroup>();
         if (canvasGroup != null)
@@ -399,25 +453,19 @@ public class GameSceneController : MonoBehaviour
             canvasGroup.alpha = 0;
         }
 
-        RectTransform rectTransform = actionText.GetComponent<RectTransform>();
-        Vector3 startPos = rectTransform.localPosition;
-        Vector3 endPos = new Vector3(startPos.x, startPos.y + 50, startPos.z); // 50만큼 올라가도록 설정
-
-        float duration = 0.3f; // 더 빠른 애니메이션을 위해 duration을 줄임
+        float duration = 0.3f; // 투명도 변경 애니메이션 시간
         float elapsed = 0f;
 
-        // Alpha와 위치 애니메이션
+        // Alpha 애니메이션 (투명도 조정만 수행)
         while (elapsed < duration)
         {
             canvasGroup.alpha = Mathf.Lerp(0, 1, elapsed / duration);
-            rectTransform.localPosition = Vector3.Lerp(startPos, endPos, elapsed / duration);
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        canvasGroup.alpha = 1;
-        rectTransform.localPosition = endPos;
-        yield return new WaitForSeconds(0.3f); // 더 짧은 시간동안 표시
+        canvasGroup.alpha = 1; // 최종적으로 alpha를 1로 설정
+        yield return new WaitForSeconds(0.3f); // 짧은 시간 동안 표시 유지
 
         // 사라지는 애니메이션
         elapsed = 0f;
@@ -430,5 +478,18 @@ public class GameSceneController : MonoBehaviour
 
         canvasGroup.alpha = 0;
         actionText.SetActive(false);
+    }
+
+    // 모든 ActionText를 숨기는 함수
+    private void HideAllActionTexts()
+    {
+        actionTextGood.SetActive(false);
+        actionTextGreat.SetActive(false);
+        actionTextPerfect.SetActive(false);
+
+        // 모든 텍스트의 CanvasGroup 투명도 초기화
+        actionTextGood.GetComponent<CanvasGroup>().alpha = 0;
+        actionTextGreat.GetComponent<CanvasGroup>().alpha = 0;
+        actionTextPerfect.GetComponent<CanvasGroup>().alpha = 0;
     }
 }
