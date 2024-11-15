@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class PopupController : MonoBehaviour
 {
-    [SerializeField] private List<GameObject> popups; // ÆË¾÷ ¿ÀºêÁ§Æ® ¸®½ºÆ®
+    [SerializeField] private List<GameObject> popups; // ï¿½Ë¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½Æ®
     private Dictionary<string, CanvasGroup> popupCanvasGroups = new Dictionary<string, CanvasGroup>();
-    private float fadeDuration = 0.5f; // ÆäÀÌµå ÀÎ/¾Æ¿ô ½Ã°£
+    private float fadeDuration = 0.5f; // ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½/ï¿½Æ¿ï¿½ ï¿½Ã°ï¿½
 
     private void Start()
     {
-        // ¸ðµç ÆË¾÷ÀÇ CanvasGroup ¼³Á¤ ¹× ºñÈ°¼ºÈ­
+        // ï¿½ï¿½ï¿½ ï¿½Ë¾ï¿½ï¿½ï¿½ CanvasGroup ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­
         foreach (var popup in popups)
         {
             CanvasGroup canvasGroup = popup.GetComponent<CanvasGroup>();
@@ -26,10 +26,9 @@ public class PopupController : MonoBehaviour
         }
     }
 
-    // Æ¯Á¤ ÆË¾÷À» ¿©´Â ¸Þ¼­µå (ÆäÀÌµå ÀÎ)
+    // Æ¯ï¿½ï¿½ ï¿½Ë¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½)
     public void ShowPopup(string popupName)
     {
-        // ´Ù¸¥ ¸ðµç ÆË¾÷Àº ´Ý°í, Æ¯Á¤ ÆË¾÷¸¸ ÆäÀÌµå ÀÎ
         foreach (var popup in popups)
         {
             if (popup.name == popupName)
@@ -43,7 +42,7 @@ public class PopupController : MonoBehaviour
         }
     }
 
-    // ¸ðµç ÆË¾÷À» ´Ý´Â ¸Þ¼­µå (ÆäÀÌµå ¾Æ¿ô)
+    // ï¿½ï¿½ï¿½ ï¿½Ë¾ï¿½ï¿½ï¿½ ï¿½Ý´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Æ¿ï¿½)
     public void CloseAllPopups()
     {
         foreach (var popup in popups)
@@ -52,7 +51,7 @@ public class PopupController : MonoBehaviour
         }
     }
 
-    // ÆäÀÌµå ÀÎ ÄÚ·çÆ¾
+    // ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ ï¿½Ú·ï¿½Æ¾
     private IEnumerator FadeIn(CanvasGroup canvasGroup)
     {
         canvasGroup.gameObject.SetActive(true);
@@ -68,7 +67,7 @@ public class PopupController : MonoBehaviour
         canvasGroup.blocksRaycasts = true;
     }
 
-    // ÆäÀÌµå ¾Æ¿ô ÄÚ·çÆ¾
+    // ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Æ¿ï¿½ ï¿½Ú·ï¿½Æ¾
     private IEnumerator FadeOut(CanvasGroup canvasGroup)
     {
         canvasGroup.interactable = false;
