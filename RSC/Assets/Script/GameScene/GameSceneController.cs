@@ -22,6 +22,7 @@ public class GameSceneController : MonoBehaviour
     [SerializeField] private GameObject actionTextPerfect;
 
     [SerializeField] private CanvasGroup GameOverCanvasGroup;
+    [SerializeField] private CanvasGroup GameClearCanvasGroup;
     [SerializeField] private Transform parentObject; // 새가 생성될 부모 오브젝트
 
     [SerializeField] private Slider leftSlider; // 왼쪽 슬라이더
@@ -52,6 +53,8 @@ public class GameSceneController : MonoBehaviour
         dimCanvasGroup.alpha = 1;
         GameOverCanvasGroup.alpha = 0; // 게임 시작 시 GameOverCanvasGroup 숨기기
         GameOverCanvasGroup.gameObject.SetActive(false);
+        GameClearCanvasGroup.alpha = 0;
+        GameClearCanvasGroup.gameObject.SetActive(false);
 
         // 슬라이더 초기화
         leftSlider.value = 0;
@@ -261,11 +264,11 @@ public class GameSceneController : MonoBehaviour
         float screenHalfWidth = Camera.main.aspect * Camera.main.orthographicSize;
         float screenHalfHeight = Camera.main.orthographicSize;
 
-        float x = Random.Range(-screenHalfWidth * 1.5f, screenHalfWidth * 1.5f);
-        float y = Random.Range(-screenHalfHeight * 1.5f, screenHalfHeight * 1.5f);
+        float x = Random.Range(-screenHalfWidth * 1.3f, screenHalfWidth * 1.3f);
+        float y = Random.Range(-screenHalfHeight * 1.3f, screenHalfHeight * 1.3f);
 
-        if (x > -screenHalfWidth && x < screenHalfWidth) x = x < 0 ? -screenHalfWidth * 1.5f : screenHalfWidth * 1.5f;
-        if (y > -screenHalfHeight && y < screenHalfHeight) y = y < 0 ? -screenHalfHeight * 1.5f : screenHalfHeight * 1.5f;
+        if (x > -screenHalfWidth && x < screenHalfWidth) x = x < 0 ? -screenHalfWidth * 1.3f : screenHalfWidth * 1.3f;
+        if (y > -screenHalfHeight && y < screenHalfHeight) y = y < 0 ? -screenHalfHeight * 1.3f : screenHalfHeight * 1.3f;
 
         return new Vector3(x, y, 0);
     }
@@ -273,6 +276,7 @@ public class GameSceneController : MonoBehaviour
     private void Update()
     {
         if (!isGameStarted) return; // 게임이 시작된 상태에서만 업데이트
+        if (gameTimer.elapsedTime >= 120) GameDone();
 
         // 키 입력을 즉각적으로 감지하여 HandleBirdDamage에 전달
         if (Input.GetKeyDown(KeyCode.Z)) HandleBirdDamage("Yellow");
@@ -455,6 +459,21 @@ public class GameSceneController : MonoBehaviour
         Debug.Log("게임 오버");
     }
 
+    public void GameDone()
+    {
+        isGameStarted = false; // 게임이 종료 상태임을 표시
+        gameTimer.enabled = false; // 타이머 중지
+        StartCoroutine(FadeInCanvasGroup(GameClearCanvasGroup, 1.0f)); // GameClearCanvasGroup 
+        GameClearCanvasGroup.gameObject.SetActive(true); // GameOver 화면 표시
+
+        // BirdParent 하위 모든 오브젝트 삭제
+        foreach (Transform child in parentObject)
+        {
+            Destroy(child.gameObject);
+        }
+
+        Debug.Log("게임 완료");
+    }
 
     private IEnumerator BlinkCharacter()
     {
@@ -559,5 +578,48 @@ public class GameSceneController : MonoBehaviour
         actionTextGood.GetComponent<CanvasGroup>().alpha = 0;
         actionTextGreat.GetComponent<CanvasGroup>().alpha = 0;
         actionTextPerfect.GetComponent<CanvasGroup>().alpha = 0;
+    }
+
+    public void RestartGame()
+    {
+        // 게임 상태 초기화
+        isGameStarted = false;
+
+        // 플레이어 HP 초기화
+        playerHP = 10;
+        hpText.text = $"{playerHP}";
+
+        // 슬라이더 초기화
+        leftSlider.value = 0;
+        rightSlider.value = 0;
+        leftSliderButton.interactable = false;
+        rightSliderButton.interactable = false;
+
+        // BirdParent 하위 모든 오브젝트 삭제
+        foreach (Transform child in parentObject)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // GameOver UI 숨기기
+        GameOverCanvasGroup.alpha = 0;
+        GameOverCanvasGroup.gameObject.SetActive(false);
+
+        // 타이머 초기화
+        gameTimer.ResetTimer();
+        gameTimer.enabled = true;
+
+        // 캐릭터 애니메이션 초기화
+        PlayIdleAnimation();
+
+        // Dim 화면 페이드 인 후 다시 게임 시작
+        StartCoroutine(RestartSequence());
+    }
+
+    // Dim 화면 페이드 인 후 게임 재시작
+    private IEnumerator RestartSequence()
+    {
+        yield return StartCoroutine(FadeInCanvasGroup(dimCanvasGroup, 1.0f));
+        StartGame(); // 게임 시작
     }
 }

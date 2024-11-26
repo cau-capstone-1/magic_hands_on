@@ -5,7 +5,7 @@ public class GameTimer : MonoBehaviour
 {
     [SerializeField] private Slider timerSlider; // Slider 컴포넌트 참조
     private float gameDuration = 120f; // 게임 시간 (초)
-    private float elapsedTime = 0f;    // 경과 시간
+    public float elapsedTime = 0f;    // 경과 시간
 
     private void Start()
     {
