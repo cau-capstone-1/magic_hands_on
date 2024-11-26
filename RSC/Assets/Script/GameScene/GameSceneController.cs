@@ -6,7 +6,7 @@ using TMPro;
 
 public class GameSceneController : MonoBehaviour
 {
-    [SerializeField] private GameTimer gameTimer; // GameTimer ½ºÅ©¸³Æ®¸¦ ÂüÁ¶
+    [SerializeField] private GameTimer gameTimer; // GameTimer ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     [SerializeField] private GameObject character;
     [SerializeField] private Text tutorialText;
     [SerializeField] private CanvasGroup tutorialCanvasGroup;
@@ -24,19 +24,19 @@ public class GameSceneController : MonoBehaviour
 
     [SerializeField] private CanvasGroup GameOverCanvasGroup;
     [SerializeField] private CanvasGroup GameClearCanvasGroup;
-    [SerializeField] private Transform parentObject; // »õ°¡ »ý¼ºµÉ ºÎ¸ð ¿ÀºêÁ§Æ®
+    [SerializeField] private Transform parentObject; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 
-    [SerializeField] private Slider leftSlider; // ¿ÞÂÊ ½½¶óÀÌ´õ
-    [SerializeField] private Slider rightSlider; // ¿À¸¥ÂÊ ½½¶óÀÌ´õ
-    [SerializeField] private Button leftSliderButton; // ¿ÞÂÊ ½½¶óÀÌ´õÀÇ ¹öÆ°
-    [SerializeField] private Button rightSliderButton; // ¿À¸¥ÂÊ ½½¶óÀÌ´õÀÇ ¹öÆ°
+    [SerializeField] private Slider leftSlider; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½
+    [SerializeField] private Slider rightSlider; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½
+    [SerializeField] private Button leftSliderButton; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°
+    [SerializeField] private Button rightSliderButton; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°
 
     [SerializeField] private PanelControl Panel;
 
-    [SerializeField] private ParticleSystem damageParticle; // ÆÄ±« ½Ã ÆÄÆ¼Å¬
-    [SerializeField] private ParticleSystem leftItemParticle; // ¾ÆÀÌÅÛ ÆÄÆ¼Å¬
-    [SerializeField] private ParticleSystem rightItemParticle; // ¾ÆÀÌÅÛ ÆÄÆ¼Å¬
-    [SerializeField] private ParticleSystem hpParticle; // ¾ÆÀÌÅÛ ÆÄÆ¼Å¬
+    [SerializeField] private ParticleSystem damageParticle; // ï¿½Ä±ï¿½ ï¿½ï¿½ ï¿½ï¿½Æ¼Å¬
+    [SerializeField] private ParticleSystem leftItemParticle; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ¼Å¬
+    [SerializeField] private ParticleSystem rightItemParticle; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ¼Å¬
+    [SerializeField] private ParticleSystem hpParticle; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ¼Å¬
 
     private void TriggerDamageEffect()
     {
@@ -45,7 +45,7 @@ public class GameSceneController : MonoBehaviour
             ParticleSystem particleInstance = Instantiate(damageParticle, character.transform.position, Quaternion.identity);
             particleInstance.Play();
 
-            // ÆÄÆ¼Å¬ÀÌ ³¡³­ µÚ ÀÚµ¿À¸·Î Á¦°Å
+            // ï¿½ï¿½Æ¼Å¬ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             Destroy(particleInstance.gameObject, particleInstance.main.duration + particleInstance.main.startLifetime.constantMax);
         }
     }
@@ -57,7 +57,7 @@ public class GameSceneController : MonoBehaviour
             ParticleSystem particleInstance = Instantiate(leftItemParticle, character.transform.position, Quaternion.identity);
             particleInstance.Play();
 
-            // ÆÄÆ¼Å¬ÀÌ ³¡³­ µÚ ÀÚµ¿À¸·Î Á¦°Å
+            // ï¿½ï¿½Æ¼Å¬ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             Destroy(particleInstance.gameObject, particleInstance.main.duration + particleInstance.main.startLifetime.constantMax);
         }
     }
@@ -71,7 +71,7 @@ public class GameSceneController : MonoBehaviour
             ParticleSystem particleInstance2 = Instantiate(hpParticle, hpText.transform.position, Quaternion.identity);
             particleInstance2.Play();
 
-            // ÆÄÆ¼Å¬ÀÌ ³¡³­ µÚ ÀÚµ¿À¸·Î Á¦°Å
+            // ï¿½ï¿½Æ¼Å¬ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             Destroy(particleInstance.gameObject, particleInstance.main.duration + particleInstance.main.startLifetime.constantMax);
             Destroy(particleInstance2.gameObject, particleInstance2.main.duration + particleInstance2.main.startLifetime.constantMax);
         }
@@ -95,72 +95,72 @@ public class GameSceneController : MonoBehaviour
 
     private void Start()
     {
-        characterAnimator = character.GetComponent<Animator>(); // Animator ÄÄÆ÷³ÍÆ® °¡Á®¿À±â
+        characterAnimator = character.GetComponent<Animator>(); // Animator ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         tutorialCanvasGroup.alpha = 0;
         dimCanvasGroup.alpha = 1;
-        GameOverCanvasGroup.alpha = 0; // °ÔÀÓ ½ÃÀÛ ½Ã GameOverCanvasGroup ¼û±â±â
+        GameOverCanvasGroup.alpha = 0; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ GameOverCanvasGroup ï¿½ï¿½ï¿½ï¿½ï¿½
         GameOverCanvasGroup.gameObject.SetActive(false);
         GameClearCanvasGroup.alpha = 0;
         GameClearCanvasGroup.gameObject.SetActive(false);
 
-        // ½½¶óÀÌ´õ ÃÊ±âÈ­
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½Ê±ï¿½È­
         leftSlider.value = 0;
         rightSlider.value = 0;
 
-        // ¹öÆ° ºñÈ°¼ºÈ­ (°ÔÀÌÁö°¡ °¡µæ Âû ¶§¸¸ È°¼ºÈ­µÊ)
+        // ï¿½ï¿½Æ° ï¿½ï¿½È°ï¿½ï¿½È­ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È°ï¿½ï¿½È­ï¿½ï¿½)
         leftSliderButton.interactable = false;
         rightSliderButton.interactable = false;
 
-        // ¹öÆ° ÀÌº¥Æ® ¼³Á¤
+        // ï¿½ï¿½Æ° ï¿½Ìºï¿½Æ® ï¿½ï¿½ï¿½ï¿½
         leftSliderButton.onClick.AddListener(DealDamageToAllBirds);
         rightSliderButton.onClick.AddListener(HealPlayerHP);
 
-        // ActionTextÀÇ Åõ¸íµµ¸¦ 0À¸·Î ÃÊ±âÈ­ÇÏ°í À§Ä¡¸¦ ¼³Á¤
+        // ActionTextï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­ï¿½Ï°ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         InitializeActionText(actionTextGood);
         InitializeActionText(actionTextGreat);
         InitializeActionText(actionTextPerfect);
 
-        // Æ©Åä¸®¾ó ¾øÀÌ ¹Ù·Î °ÔÀÓ ½ÃÀÛ
+        // Æ©ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         StartGame();
 
-        // idle ¾Ö´Ï¸ÞÀÌ¼Ç ¹Ýº¹ Àç»ý
+        // idle ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½Ýºï¿½ ï¿½ï¿½ï¿½
         PlayIdleAnimation();
     }
 
-    // Idle ¾Ö´Ï¸ÞÀÌ¼ÇÀ» ¹Ýº¹ Àç»ýÇÏ´Â ¸Þ¼­µå
+    // Idle ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½Ýºï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
     private void PlayIdleAnimation()
     {
-        characterAnimator.Play("penguin_idle"); // Animator¿¡¼­ penguin_idle ¾Ö´Ï¸ÞÀÌ¼Ç ½ÇÇà
-        characterAnimator.SetBool("isIdle", true); // °è¼Ó ¹Ýº¹µÇµµ·Ï isIdle ÇÃ·¡±× ¼³Á¤
+        characterAnimator.Play("penguin_idle"); // Animatorï¿½ï¿½ï¿½ï¿½ penguin_idle ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½
+        characterAnimator.SetBool("isIdle", true); // ï¿½ï¿½ï¿½ ï¿½Ýºï¿½ï¿½Çµï¿½ï¿½ï¿½ isIdle ï¿½Ã·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
 
     private void StartGame()
     {
         isGameStarted = true;
-        StartCoroutine(FadeOutCanvasGroup(dimCanvasGroup, 1.0f)); // Dim È­¸é ÆäÀÌµå ¾Æ¿ô
-        StartCoroutine(SpawnBirds()); // »õ ½ºÆù ½ÃÀÛ
-        gameTimer.enabled = true; // Å¸ÀÌ¸Ó ½ÃÀÛ
-        gameTimer.ResetTimer(); // Å¸ÀÌ¸Ó ÃÊ±âÈ­
-        Debug.Log("°ÔÀÓ ½ÃÀÛµÇ¾ú½À´Ï´Ù.");
+        StartCoroutine(FadeOutCanvasGroup(dimCanvasGroup, 1.0f)); // Dim È­ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Æ¿ï¿½
+        StartCoroutine(SpawnBirds()); // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        gameTimer.enabled = true; // Å¸ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
+        gameTimer.ResetTimer(); // Å¸ï¿½Ì¸ï¿½ ï¿½Ê±ï¿½È­
+        Debug.Log("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÛµÇ¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
     }
 
-    // ActionText¸¦ ÃÊ±âÈ­ÇÏ´Â ÇÔ¼ö
+    // ActionTextï¿½ï¿½ ï¿½Ê±ï¿½È­ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½
     private void InitializeActionText(GameObject actionText)
     {
         CanvasGroup canvasGroup = actionText.GetComponent<CanvasGroup>();
         if (canvasGroup != null)
         {
-            canvasGroup.alpha = 0; // alpha °ªÀ» 0À¸·Î ¼³Á¤
+            canvasGroup.alpha = 0; // alpha ï¿½ï¿½ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
 
         RectTransform rectTransform = actionText.GetComponent<RectTransform>();
         if (rectTransform != null)
         {
-            rectTransform.localPosition = new Vector3(rectTransform.localPosition.x, 0, rectTransform.localPosition.z); // Y À§Ä¡¸¦ 0À¸·Î ¼³Á¤
+            rectTransform.localPosition = new Vector3(rectTransform.localPosition.x, 0, rectTransform.localPosition.z); // Y ï¿½ï¿½Ä¡ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
         else
         {
-            Debug.LogWarning($"{actionText.name}¿¡ RectTransformÀÌ ¾ø½À´Ï´Ù. RectTransformÀ» Ãß°¡ÇØ ÁÖ¼¼¿ä.");
+            Debug.LogWarning($"{actionText.name}ï¿½ï¿½ RectTransformï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. RectTransformï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½.");
         }
     }
 
@@ -173,13 +173,13 @@ public class GameSceneController : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"{actionText.name}¿¡ CanvasGroupÀÌ ¾ø½À´Ï´Ù. CanvasGroupÀ» Ãß°¡ÇØ ÁÖ¼¼¿ä.");
+            Debug.LogWarning($"{actionText.name}ï¿½ï¿½ CanvasGroupï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. CanvasGroupï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½.");
         }
     }
 
     private void InitializeActionTexts()
     {
-        // ActionText ÃÊ±â alpha °ª ¼³Á¤
+        // ActionText ï¿½Ê±ï¿½ alpha ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         actionTextGood.GetComponent<CanvasGroup>().alpha = 0;
         actionTextGreat.GetComponent<CanvasGroup>().alpha = 0;
         actionTextPerfect.GetComponent<CanvasGroup>().alpha = 0;
@@ -188,19 +188,19 @@ public class GameSceneController : MonoBehaviour
     private IEnumerator TutorialSequence()
     {
         yield return StartCoroutine(FadeInCanvasGroup(tutorialCanvasGroup, 1.0f));
-        yield return DisplayDialogue("Æ©Åä¸®¾ó ½ÃÀÛ!", 2.0f);
-        yield return DisplayDialogue("¾È³ç! ³ª´Â Æë±ÏÀÌ¾ß. ÀÌ °ÔÀÓ¿¡ ¿Â°É È¯¿µÇØ!", 4.0f);
-        yield return DisplayDialogue("³ª¶û °°ÀÌ Æ©Åä¸®¾óÀ» ÁøÇàÇØº¸ÀÚ!", 4.0f);
-        yield return DisplayDialogue("¾î! Àú±â¿¡ ³ª¸¦ ÀâÀ¸·¯ ¿À´Â »õ°¡ ÀÖ¾î.", 4.0f);
+        yield return DisplayDialogue("Æ©ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½!", 2.0f);
+        yield return DisplayDialogue("ï¿½È³ï¿½! ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ì¾ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Ó¿ï¿½ ï¿½Â°ï¿½ È¯ï¿½ï¿½ï¿½ï¿½!", 4.0f);
+        yield return DisplayDialogue("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Æ©ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Øºï¿½ï¿½ï¿½!", 4.0f);
+        yield return DisplayDialogue("ï¿½ï¿½! ï¿½ï¿½ï¿½â¿¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½.", 4.0f);
 
         SpawnTutorialBird();
-        yield return DisplayDialogue("»õ »ö±ò¿¡ ¸Â´Â ¹öÆ°À» ´­·¯Áà!", 4.0f);
-        yield return DisplayDialogue("¿¹½Ã·Î ³ë¶õ»ö »õ°¡ µîÀåÇß¾î. Z ¹öÆ°À» ´­·¯¼­ »õ¸¦ Àâ¾ÆºÁ!", 4.0f);
+        yield return DisplayDialogue("ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Â´ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", 4.0f);
+        yield return DisplayDialogue("ï¿½ï¿½ï¿½Ã·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß¾ï¿½. Z ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æºï¿½!", 4.0f);
 
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Z));
-        yield return DisplayDialogue("ÀßÇß¾î! ÀÌÁ¦ º»°ÝÀûÀ¸·Î °ÔÀÓÀ» ½ÃÀÛÇØº¸ÀÚ.", 4.0f);
+        yield return DisplayDialogue("ï¿½ï¿½ï¿½ß¾ï¿½! ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Øºï¿½ï¿½ï¿½.", 4.0f);
 
-        StartCoroutine(FadeOutCanvasGroup(dimCanvasGroup, 1.0f)); // Dim È­¸é ÆäÀÌµå ¾Æ¿ô
+        StartCoroutine(FadeOutCanvasGroup(dimCanvasGroup, 1.0f)); // Dim È­ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Æ¿ï¿½
         StartCoroutine(SpawnBirds());
     }
 
@@ -210,10 +210,10 @@ public class GameSceneController : MonoBehaviour
         yield return new WaitForSeconds(delay);
     }
 
-    // FadeIn ¸Þ¼­µå·Î GameOverCanvasGroup º¸ÀÌ°Ô ÇÏ±â
+    // FadeIn ï¿½Þ¼ï¿½ï¿½ï¿½ï¿½ GameOverCanvasGroup ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½Ï±ï¿½
     private IEnumerator FadeInCanvasGroup(CanvasGroup canvasGroup, float duration)
     {
-        canvasGroup.gameObject.SetActive(true); // Äµ¹ö½º ±×·ì È°¼ºÈ­
+        canvasGroup.gameObject.SetActive(true); // Äµï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ È°ï¿½ï¿½È­
         float elapsedTime = 0f;
         while (elapsedTime < duration)
         {
@@ -243,12 +243,12 @@ public class GameSceneController : MonoBehaviour
         birdInstance.transform.position = GetRandomOffScreenPosition();
 
         BirdController birdController = birdInstance.GetComponent<BirdController>();
-        birdController.Initialize("Yellow", character.transform, 1, Time.time); // Yellow »õ »ý¼º ¹× ÃÊ±âÈ­, »ý¼º ½Ã°£ ±â·Ï
+        birdController.Initialize("Yellow", character.transform, 1, Time.time); // Yellow ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ê±ï¿½È­, ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½
     }
 
     private IEnumerator SpawnBirds()
     {
-        while (isGameStarted) // °ÔÀÓÀÌ ½ÃÀÛµÈ »óÅÂÀÏ ¶§¸¸ »õ¸¦ ¼ÒÈ¯
+        while (isGameStarted) // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ûµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
         {
             SpawnRandomBird();
             yield return new WaitForSeconds(birdSpawnInterval);
@@ -262,35 +262,35 @@ public class GameSceneController : MonoBehaviour
         GameObject birdInstance;
         Vector3 spawnPosition = GetRandomOffScreenPosition();
 
-        // ÁÂ¿ì ¹ÝÀü ¹× »ö»ó ¼³Á¤
+        // ï¿½Â¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         bool spawnLeft = spawnPosition.x < 0;
         string birdColor;
 
         if (spawnLeft)
         {
-            // ¿ÞÂÊ¿¡¼­´Â ³ë¶û, °ËÁ¤ »õ Áß ÇÏ³ª ¼ÒÈ¯
-            randomIndex = Random.Range(0, 2); // 0 ¶Ç´Â 1
+            // ï¿½ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ï³ï¿½ ï¿½ï¿½È¯
+            randomIndex = Random.Range(0, 2); // 0 ï¿½Ç´ï¿½ 1
             birdColor = birdColors[randomIndex];
         }
         else
         {
-            // ¿À¸¥ÂÊ¿¡¼­´Â ÃÊ·Ï, ÆÄ¶û »õ Áß ÇÏ³ª ¼ÒÈ¯
-            randomIndex = Random.Range(2, 4); // 2 ¶Ç´Â 3
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê·ï¿½, ï¿½Ä¶ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ï³ï¿½ ï¿½ï¿½È¯
+            randomIndex = Random.Range(2, 4); // 2 ï¿½Ç´ï¿½ 3
             birdColor = birdColors[randomIndex];
         }
 
-        // Instantiate ¸Þ¼­µå¿¡¼­ ºÎ¸ð ¿ÀºêÁ§Æ®¸¦ ¼³Á¤
+        // Instantiate ï¿½Þ¼ï¿½ï¿½å¿¡ï¿½ï¿½ ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         birdInstance = Instantiate(birdPrefabs[randomIndex], spawnPosition, Quaternion.identity, parentObject);
 
         birdInstance.transform.localScale = new Vector3(spawnLeft ? -0.3f : 0.3f, 0.3f, 0.3f);
 
         BirdController birdController = birdInstance.GetComponent<BirdController>();
-        birdController.Initialize(birdColor, character.transform, birdHp, Time.time); // »ý¼º ½Ã°£ Àü´Þ
+        birdController.Initialize(birdColor, character.transform, birdHp, Time.time); // ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½
      
         Debug.Log($"Spawned Bird Color: {birdColor}, Initial HP: 3");
     }
 
-    // ¸ÂÃá »õÀÇ °³¼ö¿¡ µû¶ó ActionText Ç¥½Ã
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ActionText Ç¥ï¿½ï¿½
     private void DisplayActionTextBasedOnHits(int hitCount)
     {
         if (hitCount == 1)
@@ -323,10 +323,10 @@ public class GameSceneController : MonoBehaviour
 
     private void Update()
     {
-        if (!isGameStarted) return; // °ÔÀÓÀÌ ½ÃÀÛµÈ »óÅÂ¿¡¼­¸¸ ¾÷µ¥ÀÌÆ®
+        if (!isGameStarted) return; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ûµï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
         if (gameTimer.elapsedTime >= 120) GameDone();
 
-        // Å° ÀÔ·ÂÀ» Áï°¢ÀûÀ¸·Î °¨ÁöÇÏ¿© HandleBirdDamage¿¡ Àü´Þ
+        // Å° ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½ï°¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ HandleBirdDamageï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (Input.GetKeyDown(KeyCode.Z)) HandleBirdDamage("Yellow");
         if (Input.GetKeyDown(KeyCode.X)) HandleBirdDamage("Black");
         if (Input.GetKeyDown(KeyCode.C)) HandleBirdDamage("Green");
@@ -344,17 +344,17 @@ public class GameSceneController : MonoBehaviour
         }
     }
 
-    private float lastAttackTime = 0f; // ¸¶Áö¸· °ø°Ý ½Ã°£ÀÌ ÀúÀåµÉ º¯¼ö
-    private float attackCooldown = 0.3f; // °ø°Ý Äð´Ù¿î ½Ã°£ (0.3ÃÊ)
+    private float lastAttackTime = 0f; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    private float attackCooldown = 0.3f; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ù¿ï¿½ ï¿½Ã°ï¿½ (0.3ï¿½ï¿½)
 
-    // HandleBirdDamage ¸Þ¼­µå¿¡¼­µµ °ÔÀÓ ¿À¹ö »óÅÂ È®ÀÎ Ãß°¡
+    // HandleBirdDamage ï¿½Þ¼ï¿½ï¿½å¿¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½ß°ï¿½
     private void HandleBirdDamage(string color)
     {
-        if (!isGameStarted) return; // °ÔÀÓ ¿À¹ö »óÅÂ¿¡¼­´Â »õ¿¡°Ô ÇÇÇØ¸¦ ÁÙ ¼ö ¾øÀ½
+        if (!isGameStarted) return; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
         BirdController[] birds = FindObjectsOfType<BirdController>();
         bool damageApplied = false;
-        int hitCount = 0; // ¸ÂÃá »õÀÇ °³¼ö
+        int hitCount = 0; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
         foreach (var bird in birds)
         {
@@ -364,52 +364,52 @@ public class GameSceneController : MonoBehaviour
                 Debug.Log($"Bird Color: {color}, Current HP: {bird.GetCurrentHP()}");
                 soundController.PlaySound(1);
 
-                // °ø°Ý¹ÞÀº »õ¿¡°Ô ±ôºýÀÓ ¾Ö´Ï¸ÞÀÌ¼Ç Àû¿ë
+                // ï¿½ï¿½ï¿½Ý¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½
                 StartCoroutine(BlinkBird(bird));
 
-                hitCount++; // ¸ÂÃá »õÀÇ °³¼ö Áõ°¡
+                hitCount++; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 damageApplied = true;
 
-                // ½½¶óÀÌ´õ °ÔÀÌÁö Áõ°¡
+                // ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 if (color == "Yellow" || color == "Black")
                 {
-                    leftSlider.value += 6; // ¿ÞÂÊ ½½¶óÀÌ´õ °ÔÀÌÁö Áõ°¡
+                    leftSlider.value += 6; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                     if (leftSlider.value >= 100)
                     {
-                        leftSliderButton.interactable = true; // °ÔÀÌÁö°¡ °¡µæ Â÷¸é ¹öÆ° È°¼ºÈ­
+                        leftSliderButton.interactable = true; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ° È°ï¿½ï¿½È­
                     }
                 }
                 else if (color == "Green" || color == "Blue")
                 {
-                    rightSlider.value += 6; // ¿À¸¥ÂÊ ½½¶óÀÌ´õ °ÔÀÌÁö Áõ°¡
+                    rightSlider.value += 6; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                     if (rightSlider.value >= 100)
                     {
-                        rightSliderButton.interactable = true; // °ÔÀÌÁö°¡ °¡µæ Â÷¸é ¹öÆ° È°¼ºÈ­
+                        rightSliderButton.interactable = true; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ° È°ï¿½ï¿½È­
                     }
                 }
             }
         }
 
-        // °ø°Ý ¹æÇâ ¼³Á¤
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (damageApplied)
         {
             if (color == "Yellow" || color == "Black")
             {
-                character.transform.localScale = new Vector3(-108, 108, 108); // ¿ÞÂÊÀ» ¹Ù¶óº½
+                character.transform.localScale = new Vector3(-108, 108, 108); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¶ï¿½
             }
             else if (color == "Green" || color == "Blue")
             {
-                character.transform.localScale = new Vector3(108, 108, 108); // ¿À¸¥ÂÊÀ» ¹Ù¶óº½
+                character.transform.localScale = new Vector3(108, 108, 108); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¶ï¿½
             }
 
             PlayAttackAnimation();
-            DisplayActionTextBasedOnHits(hitCount); // ¸ÂÃá »õÀÇ °³¼ö¿¡ µû¶ó ÅØ½ºÆ® Ç¥½Ã
+            DisplayActionTextBasedOnHits(hitCount); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ® Ç¥ï¿½ï¿½
         }
         else
         {
-            // ¸ÂÃá »õ°¡ ¾øÀ» °æ¿ì µ¥¹ÌÁö ÀÔ±â
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô±ï¿½
             TakeDamage(1);
-            Debug.Log("ÇØ´ç »ö»óÀÇ »õ°¡ ¾ø¾î ÇÃ·¹ÀÌ¾î°¡ ÇÇÇØ¸¦ ÀÔ¾ú½À´Ï´Ù.");
+            Debug.Log("ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î°¡ ï¿½ï¿½ï¿½Ø¸ï¿½ ï¿½Ô¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
         }
     }
 
@@ -418,11 +418,11 @@ public class GameSceneController : MonoBehaviour
         BirdController[] birds = FindObjectsOfType<BirdController>();
         foreach (var bird in birds)
         {
-            bird.TakeDamage(); // ¸ðµç »õ¿¡°Ô µ¥¹ÌÁö 1 ÁÖ±â
+            bird.TakeDamage(); // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1 ï¿½Ö±ï¿½
             Debug.Log($"All Birds Damaged, Bird Color: {bird.BirdColor}, Current HP: {bird.GetCurrentHP()}");
         }
 
-        leftSlider.value = 0; // ½½¶óÀÌ´õ ÃÊ±âÈ­
+        leftSlider.value = 0; // ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½Ê±ï¿½È­
         leftSliderButton.interactable = false;
         soundController.PlaySound(6);
         TriggerLeftItemEffect();
@@ -434,7 +434,7 @@ public class GameSceneController : MonoBehaviour
         hpText.text = $"{playerHP}";
         Debug.Log($"Player HP increased to: {playerHP}");
 
-        rightSlider.value = 0; // ½½¶óÀÌ´õ ÃÊ±âÈ­
+        rightSlider.value = 0; // ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½Ê±ï¿½È­
         rightSliderButton.interactable = false;
         soundController.PlaySound(7);
         TriggerRightItemEffect();
@@ -444,19 +444,19 @@ public class GameSceneController : MonoBehaviour
     {
         SpriteRenderer renderer = bird.GetComponent<SpriteRenderer>();
 
-        if (renderer == null) yield break; // SpriteRenderer°¡ ¾ø´Â °æ¿ì ÄÚ·çÆ¾ Á¾·á
+        if (renderer == null) yield break; // SpriteRendererï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ú·ï¿½Æ¾ ï¿½ï¿½ï¿½ï¿½
 
         for (int i = 0; i < 2; i++)
         {
-            if (renderer != null) // renderer°¡ Á¸ÀçÇÏ´ÂÁö È®ÀÎ
+            if (renderer != null) // rendererï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ È®ï¿½ï¿½
             {
-                renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, 0); // Åõ¸íÇÏ°Ô
+                renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, 0); // ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
             }
             yield return new WaitForSeconds(0.1f);
 
-            if (renderer != null) // renderer°¡ Á¸ÀçÇÏ´ÂÁö È®ÀÎ
+            if (renderer != null) // rendererï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ È®ï¿½ï¿½
             {
-                renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, 1); // ´Ù½Ã ¿ø·¡´ë·Î
+                renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, 1); // ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             }
             yield return new WaitForSeconds(0.1f);
         }
@@ -466,88 +466,88 @@ public class GameSceneController : MonoBehaviour
     {
         if (tutorialCoroutine != null)
         {
-            StopCoroutine(tutorialCoroutine); // Æ©Åä¸®¾ó ½ÃÄö½º Áß´Ü
+            StopCoroutine(tutorialCoroutine); // Æ©ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß´ï¿½
         }
 
-        tutorialText.text = ""; // Æ©Åä¸®¾ó ÅØ½ºÆ® ÃÊ±âÈ­
-        StartCoroutine(FadeOutCanvasGroup(dimCanvasGroup, 1.0f)); // Dim È­¸é ÆäÀÌµå ¾Æ¿ô
-        StartCoroutine(SpawnBirds()); // ¹Ù·Î °ÔÀÓ ½ÃÀÛ
+        tutorialText.text = ""; // Æ©ï¿½ä¸®ï¿½ï¿½ ï¿½Ø½ï¿½Æ® ï¿½Ê±ï¿½È­
+        StartCoroutine(FadeOutCanvasGroup(dimCanvasGroup, 1.0f)); // Dim È­ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Æ¿ï¿½
+        StartCoroutine(SpawnBirds()); // ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-        Debug.Log("Æ©Åä¸®¾óÀÌ ½ºÅµµÇ¾ú½À´Ï´Ù.");
+        Debug.Log("Æ©ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Åµï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
     }
 
     private void PlayAttackAnimation()
     {
-        // AttackTrigger ¹ßµ¿
+        // AttackTrigger ï¿½ßµï¿½
         characterAnimator.SetTrigger("AttackTrigger");
     }
 
     public void TakeDamage(int amount)
     {
         playerHP -= amount;
-        hpText.text = $"{playerHP}";  // .text ÇÁ·ÎÆÛÆ¼¸¦ ÅëÇØ ÅØ½ºÆ® ¼³Á¤
+        hpText.text = $"{playerHP}";  // .text ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
         Debug.Log($"Player HP: {playerHP}");
-        StartCoroutine(BlinkCharacter()); // ÇÃ·¹ÀÌ¾î ±ôºýÀÓ È¿°ú
+        StartCoroutine(BlinkCharacter()); // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½
         soundController.PlaySound(5);
         TriggerDamageEffect();
 
         if (playerHP <= 0)
         {
-            GameOver(); // °ÔÀÓ ¿À¹ö Ã³¸® ¸Þ¼­µå È£Ãâ
+            GameOver(); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ È£ï¿½ï¿½
         }
     }
 
     public void GameOver()
     {
-        isGameStarted = false; // °ÔÀÓÀÌ Á¾·á »óÅÂÀÓÀ» Ç¥½Ã
-        gameTimer.enabled = false; // Å¸ÀÌ¸Ó ÁßÁö
+        isGameStarted = false; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½
+        gameTimer.enabled = false; // Å¸ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
         StartCoroutine(FadeInCanvasGroup(GameOverCanvasGroup, 1.0f)); // GameOverCanvasGroup 
-        GameOverCanvasGroup.gameObject.SetActive(true); // GameOver È­¸é Ç¥½Ã
+        GameOverCanvasGroup.gameObject.SetActive(true); // GameOver È­ï¿½ï¿½ Ç¥ï¿½ï¿½
         soundController.PlaySound(3);
 
-        // BirdParent ÇÏÀ§ ¸ðµç ¿ÀºêÁ§Æ® »èÁ¦
+        // BirdParent ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
         foreach (Transform child in parentObject)
         {
             Destroy(child.gameObject);
         }
 
-        Debug.Log("°ÔÀÓ ¿À¹ö");
+        Debug.Log("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
 
-        // 5ÃÊ µÚ¿¡ ´Ù¸¥ ÇÔ¼ö È£Ãâ
+        // 5ï¿½ï¿½ ï¿½Ú¿ï¿½ ï¿½Ù¸ï¿½ ï¿½Ô¼ï¿½ È£ï¿½ï¿½
         StartCoroutine(ExecuteAfterDelay(5.0f, BackToPanelStage));
     }
 
     public void GameDone()
     {
-        isGameStarted = false; // °ÔÀÓÀÌ Á¾·á »óÅÂÀÓÀ» Ç¥½Ã
-        gameTimer.enabled = false; // Å¸ÀÌ¸Ó ÁßÁö
+        isGameStarted = false; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½
+        gameTimer.enabled = false; // Å¸ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
         StartCoroutine(FadeInCanvasGroup(GameClearCanvasGroup, 1.0f)); // GameClearCanvasGroup 
-        GameClearCanvasGroup.gameObject.SetActive(true); // GameOver È­¸é Ç¥½Ã
+        GameClearCanvasGroup.gameObject.SetActive(true); // GameOver È­ï¿½ï¿½ Ç¥ï¿½ï¿½
         soundController.PlaySound(4);
 
-        // BirdParent ÇÏÀ§ ¸ðµç ¿ÀºêÁ§Æ® »èÁ¦
+        // BirdParent ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
         foreach (Transform child in parentObject)
         {
             Destroy(child.gameObject);
         }
 
-        Debug.Log("°ÔÀÓ ¿Ï·á");
+        Debug.Log("ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½");
 
-        // 5ÃÊ µÚ¿¡ ´Ù¸¥ ÇÔ¼ö È£Ãâ
+        // 5ï¿½ï¿½ ï¿½Ú¿ï¿½ ï¿½Ù¸ï¿½ ï¿½Ô¼ï¿½ È£ï¿½ï¿½
         StartCoroutine(ExecuteAfterDelay(5.0f, BackToPanelStage));
     }
 
     public void BackToPanelStage()
     {
-        Panel.ShowPanel(2);
+        Panel.ShowPanel("Home");
         soundController.PlaySound(2);
     }
 
-    // Áö¿¬ ½Ã°£À» µÎ°í Æ¯Á¤ ÇÔ¼ö¸¦ ½ÇÇàÇÏ´Â ÄÚ·çÆ¾
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½Î°ï¿½ Æ¯ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ú·ï¿½Æ¾
     private IEnumerator ExecuteAfterDelay(float delay, System.Action action)
     {
-        yield return new WaitForSeconds(delay); // Áö¿¬ ½Ã°£ ´ë±â
-        action?.Invoke(); // Àü´ÞµÈ ÇÔ¼ö¸¦ ½ÇÇà
+        yield return new WaitForSeconds(delay); // ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½
+        action?.Invoke(); // ï¿½ï¿½ï¿½Þµï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
 
     private IEnumerator BlinkCharacter()
@@ -555,9 +555,9 @@ public class GameSceneController : MonoBehaviour
         SpriteRenderer renderer = character.GetComponent<SpriteRenderer>();
         for (int i = 0; i < 2; i++)
         {
-            renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, 0); // Åõ¸íÇÏ°Ô
+            renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, 0); // ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
             yield return new WaitForSeconds(0.1f);
-            renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, 1); // ´Ù½Ã ¿ø·¡´ë·Î
+            renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, 1); // ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             yield return new WaitForSeconds(0.1f);
         }
     }
@@ -605,7 +605,7 @@ public class GameSceneController : MonoBehaviour
 
     private IEnumerator AnimateActionText(GameObject actionText)
     {
-        // ±âÁ¸¿¡ Ç¥½ÃµÈ ¸ðµç ActionText¸¦ ¼û±è
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ ActionTextï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         HideAllActionTexts();
 
         actionText.SetActive(true);
@@ -615,10 +615,10 @@ public class GameSceneController : MonoBehaviour
             canvasGroup.alpha = 0;
         }
 
-        float duration = 0.3f; // Åõ¸íµµ º¯°æ ¾Ö´Ï¸ÞÀÌ¼Ç ½Ã°£
+        float duration = 0.3f; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½Ã°ï¿½
         float elapsed = 0f;
 
-        // Alpha ¾Ö´Ï¸ÞÀÌ¼Ç (Åõ¸íµµ Á¶Á¤¸¸ ¼öÇà)
+        // Alpha ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
         while (elapsed < duration)
         {
             canvasGroup.alpha = Mathf.Lerp(0, 1, elapsed / duration);
@@ -626,10 +626,10 @@ public class GameSceneController : MonoBehaviour
             yield return null;
         }
 
-        canvasGroup.alpha = 1; // ÃÖÁ¾ÀûÀ¸·Î alpha¸¦ 1·Î ¼³Á¤
-        yield return new WaitForSeconds(0.3f); // ÂªÀº ½Ã°£ µ¿¾È Ç¥½Ã À¯Áö
+        canvasGroup.alpha = 1; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ alphaï¿½ï¿½ 1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        yield return new WaitForSeconds(0.3f); // Âªï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-        // »ç¶óÁö´Â ¾Ö´Ï¸ÞÀÌ¼Ç
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½
         elapsed = 0f;
         while (elapsed < duration)
         {
@@ -642,14 +642,14 @@ public class GameSceneController : MonoBehaviour
         actionText.SetActive(false);
     }
 
-    // ¸ðµç ActionText¸¦ ¼û±â´Â ÇÔ¼ö
+    // ï¿½ï¿½ï¿½ ActionTextï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
     private void HideAllActionTexts()
     {
         actionTextGood.SetActive(false);
         actionTextGreat.SetActive(false);
         actionTextPerfect.SetActive(false);
 
-        // ¸ðµç ÅØ½ºÆ®ÀÇ CanvasGroup Åõ¸íµµ ÃÊ±âÈ­
+        // ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ®ï¿½ï¿½ CanvasGroup ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
         actionTextGood.GetComponent<CanvasGroup>().alpha = 0;
         actionTextGreat.GetComponent<CanvasGroup>().alpha = 0;
         actionTextPerfect.GetComponent<CanvasGroup>().alpha = 0;
@@ -657,44 +657,44 @@ public class GameSceneController : MonoBehaviour
 
     public void RestartGame()
     {
-        // °ÔÀÓ »óÅÂ ÃÊ±âÈ­
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
         isGameStarted = false;
 
-        // ÇÃ·¹ÀÌ¾î HP ÃÊ±âÈ­
+        // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ HP ï¿½Ê±ï¿½È­
         playerHP = 10;
         hpText.text = $"{playerHP}";
 
-        // ½½¶óÀÌ´õ ÃÊ±âÈ­
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½Ê±ï¿½È­
         leftSlider.value = 0;
         rightSlider.value = 0;
         leftSliderButton.interactable = false;
         rightSliderButton.interactable = false;
 
-        // BirdParent ÇÏÀ§ ¸ðµç ¿ÀºêÁ§Æ® »èÁ¦
+        // BirdParent ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
         foreach (Transform child in parentObject)
         {
             Destroy(child.gameObject);
         }
 
-        // GameOver UI ¼û±â±â
+        // GameOver UI ï¿½ï¿½ï¿½ï¿½ï¿½
         GameOverCanvasGroup.alpha = 0;
         GameOverCanvasGroup.gameObject.SetActive(false);
 
-        // Å¸ÀÌ¸Ó ÃÊ±âÈ­
+        // Å¸ï¿½Ì¸ï¿½ ï¿½Ê±ï¿½È­
         gameTimer.ResetTimer();
         gameTimer.enabled = true;
 
-        // Ä³¸¯ÅÍ ¾Ö´Ï¸ÞÀÌ¼Ç ÃÊ±âÈ­
+        // Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½Ê±ï¿½È­
         PlayIdleAnimation();
 
-        // Dim È­¸é ÆäÀÌµå ÀÎ ÈÄ ´Ù½Ã °ÔÀÓ ½ÃÀÛ
+        // Dim È­ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         StartCoroutine(RestartSequence());
     }
 
-    // Dim È­¸é ÆäÀÌµå ÀÎ ÈÄ °ÔÀÓ Àç½ÃÀÛ
+    // Dim È­ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
     private IEnumerator RestartSequence()
     {
         yield return StartCoroutine(FadeInCanvasGroup(dimCanvasGroup, 1.0f));
-        StartGame(); // °ÔÀÓ ½ÃÀÛ
+        StartGame(); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
 }
