@@ -189,3 +189,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destructionParticle: {fileID: 8916908749715170831, guid: 5862a32d170362b408fb5c762155047d, type: 3}
+  damageSound: {fileID: 8300000, guid: aeff979cceb2c4e8598eeb0500112a13, type: 3}
