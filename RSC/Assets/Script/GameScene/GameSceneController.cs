@@ -380,6 +380,7 @@ public class GameSceneController : MonoBehaviour
 
         leftSlider.value = 0; // 슬라이더 초기화
         leftSliderButton.interactable = false;
+        soundController.PlaySound(6);
     }
 
     private void HealPlayerHP()
@@ -390,6 +391,7 @@ public class GameSceneController : MonoBehaviour
 
         rightSlider.value = 0; // 슬라이더 초기화
         rightSliderButton.interactable = false;
+        soundController.PlaySound(7);
     }
 
     private IEnumerator BlinkBird(BirdController bird)
@@ -440,6 +442,7 @@ public class GameSceneController : MonoBehaviour
         hpText.text = $"{playerHP}";  // .text 프로퍼티를 통해 텍스트 설정
         Debug.Log($"Player HP: {playerHP}");
         StartCoroutine(BlinkCharacter()); // 플레이어 깜빡임 효과
+        soundController.PlaySound(5);
 
         if (playerHP <= 0)
         {
@@ -453,6 +456,7 @@ public class GameSceneController : MonoBehaviour
         gameTimer.enabled = false; // 타이머 중지
         StartCoroutine(FadeInCanvasGroup(GameOverCanvasGroup, 1.0f)); // GameOverCanvasGroup 
         GameOverCanvasGroup.gameObject.SetActive(true); // GameOver 화면 표시
+        soundController.PlaySound(3);
 
         // BirdParent 하위 모든 오브젝트 삭제
         foreach (Transform child in parentObject)
@@ -472,6 +476,7 @@ public class GameSceneController : MonoBehaviour
         gameTimer.enabled = false; // 타이머 중지
         StartCoroutine(FadeInCanvasGroup(GameClearCanvasGroup, 1.0f)); // GameClearCanvasGroup 
         GameClearCanvasGroup.gameObject.SetActive(true); // GameOver 화면 표시
+        soundController.PlaySound(4);
 
         // BirdParent 하위 모든 오브젝트 삭제
         foreach (Transform child in parentObject)
@@ -488,6 +493,7 @@ public class GameSceneController : MonoBehaviour
     public void BackToPanelStage()
     {
         Panel.ShowPanel(2);
+        soundController.PlaySound(2);
     }
 
     // 지연 시간을 두고 특정 함수를 실행하는 코루틴
