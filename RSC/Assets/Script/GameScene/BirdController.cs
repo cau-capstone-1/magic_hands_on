@@ -8,12 +8,28 @@ public class BirdController : MonoBehaviour
     private float attackDistance = 1.5f; // 플레이어에 도달하는 거리 임계값
     public float SpawnTime { get; private set; } // 새가 생성된 시간 기록
 
+    [SerializeField] private ParticleSystem damageParticle; // 파괴 시 파티클
+    [SerializeField] private ParticleSystem destructionParticle; // 파괴 시 파티클
+    [SerializeField] private AudioClip damageSound; // 데미지 사운드
+    private AudioSource audioSource; // AudioSource 컴포넌트
+
     public void Initialize(string color, Transform target, int hp, float spawnTime)
     {
         BirdColor = color;
         this.target = target;
         this.hp = hp;
         SpawnTime = spawnTime; // 생성 시간 초기화
+    }
+
+    private void Start()
+    {
+        // AudioSource 컴포넌트를 가져오거나 추가
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        audioSource.playOnAwake = false; // 자동 재생 비활성화
     }
 
     private void Update()
@@ -46,7 +62,49 @@ public class BirdController : MonoBehaviour
         {
             GameSceneController gameController = FindObjectOfType<GameSceneController>();
             gameController.DisplayActionTextBasedOnTime(this); // 시간에 따른 ActionText 표시
+
+            PlayDamageSound(); // 데미지 사운드 재생
+            TriggerDestructionEffect(); // 파괴 효과 실행
             Destroy(gameObject);
+        } else
+        {
+            TriggerDamageEffect();
+        }
+    }
+
+    private void TriggerDestructionEffect()
+    {
+        if (destructionParticle != null)
+        {
+            ParticleSystem particleInstance = Instantiate(destructionParticle, transform.position, Quaternion.identity);
+            particleInstance.Play();
+
+            // 파티클이 끝난 뒤 자동으로 제거
+            Destroy(particleInstance.gameObject, particleInstance.main.duration + particleInstance.main.startLifetime.constantMax);
+        }
+    }
+
+    private void TriggerDamageEffect()
+    {
+        if (damageParticle != null)
+        {
+            ParticleSystem particleInstance = Instantiate(damageParticle, transform.position, Quaternion.identity);
+
+            // 크기 조정
+            particleInstance.transform.localScale *= 1.6f;
+
+            particleInstance.Play();
+
+            // 파티클이 끝난 뒤 자동으로 제거
+            Destroy(particleInstance.gameObject, particleInstance.main.duration + particleInstance.main.startLifetime.constantMax);
+        }
+    }
+
+    private void PlayDamageSound()
+    {
+        if (audioSource != null && damageSound != null)
+        {
+            audioSource.PlayOneShot(damageSound);
         }
     }
 

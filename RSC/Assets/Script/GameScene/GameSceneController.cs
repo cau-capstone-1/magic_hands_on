@@ -13,6 +13,7 @@ public class GameSceneController : MonoBehaviour
     [SerializeField] private CanvasGroup dimCanvasGroup;
     [SerializeField] private List<GameObject> birdPrefabs;
     [SerializeField] private float birdSpawnInterval = 3.0f;
+    [SerializeField] private int birdHp = 3;
     [SerializeField] private int playerHP = 10;
     [SerializeField] private SoundController soundController;
     [SerializeField] private TextMeshProUGUI hpText;
@@ -22,12 +23,59 @@ public class GameSceneController : MonoBehaviour
     [SerializeField] private GameObject actionTextPerfect;
 
     [SerializeField] private CanvasGroup GameOverCanvasGroup;
+    [SerializeField] private CanvasGroup GameClearCanvasGroup;
     [SerializeField] private Transform parentObject; // 새가 생성될 부모 오브젝트
 
     [SerializeField] private Slider leftSlider; // 왼쪽 슬라이더
     [SerializeField] private Slider rightSlider; // 오른쪽 슬라이더
     [SerializeField] private Button leftSliderButton; // 왼쪽 슬라이더의 버튼
     [SerializeField] private Button rightSliderButton; // 오른쪽 슬라이더의 버튼
+
+    [SerializeField] private PanelControl Panel;
+
+    [SerializeField] private ParticleSystem damageParticle; // 파괴 시 파티클
+    [SerializeField] private ParticleSystem leftItemParticle; // 아이템 파티클
+    [SerializeField] private ParticleSystem rightItemParticle; // 아이템 파티클
+    [SerializeField] private ParticleSystem hpParticle; // 아이템 파티클
+
+    private void TriggerDamageEffect()
+    {
+        if (damageParticle != null)
+        {
+            ParticleSystem particleInstance = Instantiate(damageParticle, character.transform.position, Quaternion.identity);
+            particleInstance.Play();
+
+            // 파티클이 끝난 뒤 자동으로 제거
+            Destroy(particleInstance.gameObject, particleInstance.main.duration + particleInstance.main.startLifetime.constantMax);
+        }
+    }
+
+    private void TriggerLeftItemEffect()
+    {
+        if (leftItemParticle != null)
+        {
+            ParticleSystem particleInstance = Instantiate(leftItemParticle, character.transform.position, Quaternion.identity);
+            particleInstance.Play();
+
+            // 파티클이 끝난 뒤 자동으로 제거
+            Destroy(particleInstance.gameObject, particleInstance.main.duration + particleInstance.main.startLifetime.constantMax);
+        }
+    }
+    private void TriggerRightItemEffect()
+    {
+        if (rightItemParticle != null && hpParticle != null)
+        {
+            ParticleSystem particleInstance = Instantiate(rightItemParticle, character.transform.position, Quaternion.identity);
+            particleInstance.Play();
+
+            ParticleSystem particleInstance2 = Instantiate(hpParticle, hpText.transform.position, Quaternion.identity);
+            particleInstance2.Play();
+
+            // 파티클이 끝난 뒤 자동으로 제거
+            Destroy(particleInstance.gameObject, particleInstance.main.duration + particleInstance.main.startLifetime.constantMax);
+            Destroy(particleInstance2.gameObject, particleInstance2.main.duration + particleInstance2.main.startLifetime.constantMax);
+        }
+    }
 
     private Animator characterAnimator;
     private Dictionary<KeyCode, string> keyColorMap = new Dictionary<KeyCode, string>
@@ -52,6 +100,8 @@ public class GameSceneController : MonoBehaviour
         dimCanvasGroup.alpha = 1;
         GameOverCanvasGroup.alpha = 0; // 게임 시작 시 GameOverCanvasGroup 숨기기
         GameOverCanvasGroup.gameObject.SetActive(false);
+        GameClearCanvasGroup.alpha = 0;
+        GameClearCanvasGroup.gameObject.SetActive(false);
 
         // 슬라이더 초기화
         leftSlider.value = 0;
@@ -235,7 +285,8 @@ public class GameSceneController : MonoBehaviour
         birdInstance.transform.localScale = new Vector3(spawnLeft ? -0.3f : 0.3f, 0.3f, 0.3f);
 
         BirdController birdController = birdInstance.GetComponent<BirdController>();
-        birdController.Initialize(birdColor, character.transform, 3, Time.time); // 생성 시간 전달
+        birdController.Initialize(birdColor, character.transform, birdHp, Time.time); // 생성 시간 전달
+     
         Debug.Log($"Spawned Bird Color: {birdColor}, Initial HP: 3");
     }
 
@@ -261,11 +312,11 @@ public class GameSceneController : MonoBehaviour
         float screenHalfWidth = Camera.main.aspect * Camera.main.orthographicSize;
         float screenHalfHeight = Camera.main.orthographicSize;
 
-        float x = Random.Range(-screenHalfWidth * 1.5f, screenHalfWidth * 1.5f);
-        float y = Random.Range(-screenHalfHeight * 1.5f, screenHalfHeight * 1.5f);
+        float x = Random.Range(-screenHalfWidth * 1.0f, screenHalfWidth * 1.0f);
+        float y = Random.Range(-screenHalfHeight * 1.0f, screenHalfHeight * 1.0f);
 
-        if (x > -screenHalfWidth && x < screenHalfWidth) x = x < 0 ? -screenHalfWidth * 1.5f : screenHalfWidth * 1.5f;
-        if (y > -screenHalfHeight && y < screenHalfHeight) y = y < 0 ? -screenHalfHeight * 1.5f : screenHalfHeight * 1.5f;
+        if (x > -screenHalfWidth && x < screenHalfWidth) x = x < 0 ? -screenHalfWidth * 1.0f : screenHalfWidth * 1.0f;
+        if (y > -screenHalfHeight && y < screenHalfHeight) y = y < 0 ? -screenHalfHeight * 1.0f : screenHalfHeight * 1.0f;
 
         return new Vector3(x, y, 0);
     }
@@ -273,6 +324,7 @@ public class GameSceneController : MonoBehaviour
     private void Update()
     {
         if (!isGameStarted) return; // 게임이 시작된 상태에서만 업데이트
+        if (gameTimer.elapsedTime >= 120) GameDone();
 
         // 키 입력을 즉각적으로 감지하여 HandleBirdDamage에 전달
         if (Input.GetKeyDown(KeyCode.Z)) HandleBirdDamage("Yellow");
@@ -372,6 +424,8 @@ public class GameSceneController : MonoBehaviour
 
         leftSlider.value = 0; // 슬라이더 초기화
         leftSliderButton.interactable = false;
+        soundController.PlaySound(6);
+        TriggerLeftItemEffect();
     }
 
     private void HealPlayerHP()
@@ -382,6 +436,8 @@ public class GameSceneController : MonoBehaviour
 
         rightSlider.value = 0; // 슬라이더 초기화
         rightSliderButton.interactable = false;
+        soundController.PlaySound(7);
+        TriggerRightItemEffect();
     }
 
     private IEnumerator BlinkBird(BirdController bird)
@@ -432,6 +488,8 @@ public class GameSceneController : MonoBehaviour
         hpText.text = $"{playerHP}";  // .text 프로퍼티를 통해 텍스트 설정
         Debug.Log($"Player HP: {playerHP}");
         StartCoroutine(BlinkCharacter()); // 플레이어 깜빡임 효과
+        soundController.PlaySound(5);
+        TriggerDamageEffect();
 
         if (playerHP <= 0)
         {
@@ -445,6 +503,7 @@ public class GameSceneController : MonoBehaviour
         gameTimer.enabled = false; // 타이머 중지
         StartCoroutine(FadeInCanvasGroup(GameOverCanvasGroup, 1.0f)); // GameOverCanvasGroup 
         GameOverCanvasGroup.gameObject.SetActive(true); // GameOver 화면 표시
+        soundController.PlaySound(3);
 
         // BirdParent 하위 모든 오브젝트 삭제
         foreach (Transform child in parentObject)
@@ -453,8 +512,43 @@ public class GameSceneController : MonoBehaviour
         }
 
         Debug.Log("게임 오버");
+
+        // 5초 뒤에 다른 함수 호출
+        StartCoroutine(ExecuteAfterDelay(5.0f, BackToPanelStage));
     }
 
+    public void GameDone()
+    {
+        isGameStarted = false; // 게임이 종료 상태임을 표시
+        gameTimer.enabled = false; // 타이머 중지
+        StartCoroutine(FadeInCanvasGroup(GameClearCanvasGroup, 1.0f)); // GameClearCanvasGroup 
+        GameClearCanvasGroup.gameObject.SetActive(true); // GameOver 화면 표시
+        soundController.PlaySound(4);
+
+        // BirdParent 하위 모든 오브젝트 삭제
+        foreach (Transform child in parentObject)
+        {
+            Destroy(child.gameObject);
+        }
+
+        Debug.Log("게임 완료");
+
+        // 5초 뒤에 다른 함수 호출
+        StartCoroutine(ExecuteAfterDelay(5.0f, BackToPanelStage));
+    }
+
+    public void BackToPanelStage()
+    {
+        Panel.ShowPanel(2);
+        soundController.PlaySound(2);
+    }
+
+    // 지연 시간을 두고 특정 함수를 실행하는 코루틴
+    private IEnumerator ExecuteAfterDelay(float delay, System.Action action)
+    {
+        yield return new WaitForSeconds(delay); // 지연 시간 대기
+        action?.Invoke(); // 전달된 함수를 실행
+    }
 
     private IEnumerator BlinkCharacter()
     {
@@ -559,5 +653,48 @@ public class GameSceneController : MonoBehaviour
         actionTextGood.GetComponent<CanvasGroup>().alpha = 0;
         actionTextGreat.GetComponent<CanvasGroup>().alpha = 0;
         actionTextPerfect.GetComponent<CanvasGroup>().alpha = 0;
+    }
+
+    public void RestartGame()
+    {
+        // 게임 상태 초기화
+        isGameStarted = false;
+
+        // 플레이어 HP 초기화
+        playerHP = 10;
+        hpText.text = $"{playerHP}";
+
+        // 슬라이더 초기화
+        leftSlider.value = 0;
+        rightSlider.value = 0;
+        leftSliderButton.interactable = false;
+        rightSliderButton.interactable = false;
+
+        // BirdParent 하위 모든 오브젝트 삭제
+        foreach (Transform child in parentObject)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // GameOver UI 숨기기
+        GameOverCanvasGroup.alpha = 0;
+        GameOverCanvasGroup.gameObject.SetActive(false);
+
+        // 타이머 초기화
+        gameTimer.ResetTimer();
+        gameTimer.enabled = true;
+
+        // 캐릭터 애니메이션 초기화
+        PlayIdleAnimation();
+
+        // Dim 화면 페이드 인 후 다시 게임 시작
+        StartCoroutine(RestartSequence());
+    }
+
+    // Dim 화면 페이드 인 후 게임 재시작
+    private IEnumerator RestartSequence()
+    {
+        yield return StartCoroutine(FadeInCanvasGroup(dimCanvasGroup, 1.0f));
+        StartGame(); // 게임 시작
     }
 }
