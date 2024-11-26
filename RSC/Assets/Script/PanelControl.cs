@@ -1,16 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 public class PanelControl : MonoBehaviour
 {
-    [SerializeField] private List<GameObject> panels = new(); // ÆÐ³Î ¸®½ºÆ®
-    private int currentPanelIndex = 0; // ÇöÀç È°¼ºÈ­µÈ ÆÐ³Î ÀÎµ¦½º
-    public float slideDuration = 0.5f; // ½½¶óÀÌµå ¾Ö´Ï¸ÞÀÌ¼Ç ½Ã°£
+    [SerializeField] private List<GameObject> panels = new(); // ï¿½Ð³ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®
+    private int currentPanelIndex = 0; // ï¿½ï¿½ï¿½ï¿½ È°ï¿½ï¿½È­ï¿½ï¿½ ï¿½Ð³ï¿½ ï¿½Îµï¿½ï¿½ï¿½
+    public float slideDuration = 0.5f; // ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½Ã°ï¿½
 
     private void Start()
     {
-        // ½ÃÀÛ ½Ã ¸ðµç ÆÐ³Î ¼û±â°í 0¹ø ÆÐ³Î¸¸ È°¼ºÈ­
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ 0ï¿½ï¿½ ï¿½Ð³Î¸ï¿½ È°ï¿½ï¿½È­
         HideAllPanels();
         if (panels.Count > 0)
         {
@@ -19,12 +20,16 @@ public class PanelControl : MonoBehaviour
         }
     }
 
-    public void ShowPanel(int index)
-    {
+    public void ShowPanel(string name) {
+        int index = panels.FindIndex(panel => panel.name == name);
+
+        Debug.Log("ShowPanel: " + name + index);
+
+
         if (index < 0 || index >= panels.Count || index == currentPanelIndex)
             return;
 
-        // ÇöÀç ÆÐ³ÎÀ» ½½¶óÀÌµå ¾Æ¿ôÇÏ°í »õ ÆÐ³ÎÀ» ½½¶óÀÌµå ÀÎ
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Æ¿ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ ï¿½Ð³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½
         StartCoroutine(SlidePanel(currentPanelIndex, index));
         currentPanelIndex = index;
     }
@@ -42,22 +47,22 @@ public class PanelControl : MonoBehaviour
         GameObject fromPanel = panels[fromIndex];
         GameObject toPanel = panels[toIndex];
 
-        // ½½¶óÀÌµå ¹æÇâ ¼³Á¤
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         Vector3 fromTargetPosition;
         Vector3 toStartPosition;
 
-        if (toIndex > fromIndex) // ¾Æ·¡¿¡¼­ À§·Î ½½¶óÀÌµå
+        if (toIndex > fromIndex) // ï¿½Æ·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½
         {
-            fromTargetPosition = new Vector3(0, Screen.height, 0); // À§·Î »ç¶óÁü
-            toStartPosition = new Vector3(0, -Screen.height, 0);   // ¾Æ·¡¿¡¼­ µîÀå
+            fromTargetPosition = new Vector3(0, Screen.height, 0); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+            toStartPosition = new Vector3(0, -Screen.height, 0);   // ï¿½Æ·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
-        else // À§¿¡¼­ ¾Æ·¡·Î ½½¶óÀÌµå
+        else // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½
         {
-            fromTargetPosition = new Vector3(0, -Screen.height, 0); // ¾Æ·¡·Î »ç¶óÁü
-            toStartPosition = new Vector3(0, Screen.height, 0);     // À§¿¡¼­ µîÀå
+            fromTargetPosition = new Vector3(0, -Screen.height, 0); // ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+            toStartPosition = new Vector3(0, Screen.height, 0);     // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
 
-        // »õ ÆÐ³Î È°¼ºÈ­ ¹× ½ÃÀÛ À§Ä¡ ¼³Á¤
+        // ï¿½ï¿½ ï¿½Ð³ï¿½ È°ï¿½ï¿½È­ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
         toPanel.SetActive(true);
         toPanel.transform.localPosition = toStartPosition;
 
@@ -67,16 +72,16 @@ public class PanelControl : MonoBehaviour
         {
             elapsedTime += Time.deltaTime;
             float t = elapsedTime / slideDuration;
-            t = Mathf.SmoothStep(0, 1, t); // ºÎµå·¯¿î ÀÌÂ¡ È¿°ú
+            t = Mathf.SmoothStep(0, 1, t); // ï¿½Îµå·¯ï¿½ï¿½ ï¿½ï¿½Â¡ È¿ï¿½ï¿½
 
-            // ½½¶óÀÌµå ÀÌµ¿
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Ìµï¿½
             fromPanel.transform.localPosition = Vector3.Lerp(Vector3.zero, fromTargetPosition, t);
             toPanel.transform.localPosition = Vector3.Lerp(toStartPosition, Vector3.zero, t);
 
             yield return null;
         }
 
-        // ¾Ö´Ï¸ÞÀÌ¼ÇÀÌ ³¡³­ ÈÄ ÀÌÀü ÆÐ³Î ºñÈ°¼ºÈ­ ¹× À§Ä¡ ÃÊ±âÈ­
+        // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­ ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½Ê±ï¿½È­
         fromPanel.SetActive(false);
         fromPanel.transform.localPosition = Vector3.zero;
     }
