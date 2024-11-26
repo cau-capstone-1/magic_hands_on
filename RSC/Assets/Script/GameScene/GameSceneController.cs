@@ -13,6 +13,7 @@ public class GameSceneController : MonoBehaviour
     [SerializeField] private CanvasGroup dimCanvasGroup;
     [SerializeField] private List<GameObject> birdPrefabs;
     [SerializeField] private float birdSpawnInterval = 3.0f;
+    [SerializeField] private int birdHp = 3;
     [SerializeField] private int playerHP = 10;
     [SerializeField] private SoundController soundController;
     [SerializeField] private TextMeshProUGUI hpText;
@@ -29,6 +30,8 @@ public class GameSceneController : MonoBehaviour
     [SerializeField] private Slider rightSlider; // 오른쪽 슬라이더
     [SerializeField] private Button leftSliderButton; // 왼쪽 슬라이더의 버튼
     [SerializeField] private Button rightSliderButton; // 오른쪽 슬라이더의 버튼
+
+    [SerializeField] private PanelControl Panel;
 
     private Animator characterAnimator;
     private Dictionary<KeyCode, string> keyColorMap = new Dictionary<KeyCode, string>
@@ -238,7 +241,8 @@ public class GameSceneController : MonoBehaviour
         birdInstance.transform.localScale = new Vector3(spawnLeft ? -0.3f : 0.3f, 0.3f, 0.3f);
 
         BirdController birdController = birdInstance.GetComponent<BirdController>();
-        birdController.Initialize(birdColor, character.transform, 3, Time.time); // 생성 시간 전달
+        birdController.Initialize(birdColor, character.transform, birdHp, Time.time); // 생성 시간 전달
+     
         Debug.Log($"Spawned Bird Color: {birdColor}, Initial HP: 3");
     }
 
@@ -457,6 +461,9 @@ public class GameSceneController : MonoBehaviour
         }
 
         Debug.Log("게임 오버");
+
+        // 5초 뒤에 다른 함수 호출
+        StartCoroutine(ExecuteAfterDelay(5.0f, BackToPanelStage));
     }
 
     public void GameDone()
@@ -473,6 +480,21 @@ public class GameSceneController : MonoBehaviour
         }
 
         Debug.Log("게임 완료");
+
+        // 5초 뒤에 다른 함수 호출
+        StartCoroutine(ExecuteAfterDelay(5.0f, BackToPanelStage));
+    }
+
+    public void BackToPanelStage()
+    {
+        Panel.ShowPanel(2);
+    }
+
+    // 지연 시간을 두고 특정 함수를 실행하는 코루틴
+    private IEnumerator ExecuteAfterDelay(float delay, System.Action action)
+    {
+        yield return new WaitForSeconds(delay); // 지연 시간 대기
+        action?.Invoke(); // 전달된 함수를 실행
     }
 
     private IEnumerator BlinkCharacter()
