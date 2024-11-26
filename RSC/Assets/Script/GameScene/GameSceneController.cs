@@ -33,6 +33,50 @@ public class GameSceneController : MonoBehaviour
 
     [SerializeField] private PanelControl Panel;
 
+    [SerializeField] private ParticleSystem damageParticle; // 파괴 시 파티클
+    [SerializeField] private ParticleSystem leftItemParticle; // 아이템 파티클
+    [SerializeField] private ParticleSystem rightItemParticle; // 아이템 파티클
+    [SerializeField] private ParticleSystem hpParticle; // 아이템 파티클
+
+    private void TriggerDamageEffect()
+    {
+        if (damageParticle != null)
+        {
+            ParticleSystem particleInstance = Instantiate(damageParticle, character.transform.position, Quaternion.identity);
+            particleInstance.Play();
+
+            // 파티클이 끝난 뒤 자동으로 제거
+            Destroy(particleInstance.gameObject, particleInstance.main.duration + particleInstance.main.startLifetime.constantMax);
+        }
+    }
+
+    private void TriggerLeftItemEffect()
+    {
+        if (leftItemParticle != null)
+        {
+            ParticleSystem particleInstance = Instantiate(leftItemParticle, character.transform.position, Quaternion.identity);
+            particleInstance.Play();
+
+            // 파티클이 끝난 뒤 자동으로 제거
+            Destroy(particleInstance.gameObject, particleInstance.main.duration + particleInstance.main.startLifetime.constantMax);
+        }
+    }
+    private void TriggerRightItemEffect()
+    {
+        if (rightItemParticle != null && hpParticle != null)
+        {
+            ParticleSystem particleInstance = Instantiate(rightItemParticle, character.transform.position, Quaternion.identity);
+            particleInstance.Play();
+
+            ParticleSystem particleInstance2 = Instantiate(hpParticle, hpText.transform.position, Quaternion.identity);
+            particleInstance2.Play();
+
+            // 파티클이 끝난 뒤 자동으로 제거
+            Destroy(particleInstance.gameObject, particleInstance.main.duration + particleInstance.main.startLifetime.constantMax);
+            Destroy(particleInstance2.gameObject, particleInstance2.main.duration + particleInstance2.main.startLifetime.constantMax);
+        }
+    }
+
     private Animator characterAnimator;
     private Dictionary<KeyCode, string> keyColorMap = new Dictionary<KeyCode, string>
     {
@@ -268,11 +312,11 @@ public class GameSceneController : MonoBehaviour
         float screenHalfWidth = Camera.main.aspect * Camera.main.orthographicSize;
         float screenHalfHeight = Camera.main.orthographicSize;
 
-        float x = Random.Range(-screenHalfWidth * 1.3f, screenHalfWidth * 1.3f);
-        float y = Random.Range(-screenHalfHeight * 1.3f, screenHalfHeight * 1.3f);
+        float x = Random.Range(-screenHalfWidth * 1.0f, screenHalfWidth * 1.0f);
+        float y = Random.Range(-screenHalfHeight * 1.0f, screenHalfHeight * 1.0f);
 
-        if (x > -screenHalfWidth && x < screenHalfWidth) x = x < 0 ? -screenHalfWidth * 1.3f : screenHalfWidth * 1.3f;
-        if (y > -screenHalfHeight && y < screenHalfHeight) y = y < 0 ? -screenHalfHeight * 1.3f : screenHalfHeight * 1.3f;
+        if (x > -screenHalfWidth && x < screenHalfWidth) x = x < 0 ? -screenHalfWidth * 1.0f : screenHalfWidth * 1.0f;
+        if (y > -screenHalfHeight && y < screenHalfHeight) y = y < 0 ? -screenHalfHeight * 1.0f : screenHalfHeight * 1.0f;
 
         return new Vector3(x, y, 0);
     }
@@ -381,6 +425,7 @@ public class GameSceneController : MonoBehaviour
         leftSlider.value = 0; // 슬라이더 초기화
         leftSliderButton.interactable = false;
         soundController.PlaySound(6);
+        TriggerLeftItemEffect();
     }
 
     private void HealPlayerHP()
@@ -392,6 +437,7 @@ public class GameSceneController : MonoBehaviour
         rightSlider.value = 0; // 슬라이더 초기화
         rightSliderButton.interactable = false;
         soundController.PlaySound(7);
+        TriggerRightItemEffect();
     }
 
     private IEnumerator BlinkBird(BirdController bird)
@@ -443,6 +489,7 @@ public class GameSceneController : MonoBehaviour
         Debug.Log($"Player HP: {playerHP}");
         StartCoroutine(BlinkCharacter()); // 플레이어 깜빡임 효과
         soundController.PlaySound(5);
+        TriggerDamageEffect();
 
         if (playerHP <= 0)
         {

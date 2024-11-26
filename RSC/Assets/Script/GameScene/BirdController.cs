@@ -8,6 +8,7 @@ public class BirdController : MonoBehaviour
     private float attackDistance = 1.5f; // 플레이어에 도달하는 거리 임계값
     public float SpawnTime { get; private set; } // 새가 생성된 시간 기록
 
+    [SerializeField] private ParticleSystem damageParticle; // 파괴 시 파티클
     [SerializeField] private ParticleSystem destructionParticle; // 파괴 시 파티클
     [SerializeField] private AudioClip damageSound; // 데미지 사운드
     private AudioSource audioSource; // AudioSource 컴포넌트
@@ -65,6 +66,9 @@ public class BirdController : MonoBehaviour
             PlayDamageSound(); // 데미지 사운드 재생
             TriggerDestructionEffect(); // 파괴 효과 실행
             Destroy(gameObject);
+        } else
+        {
+            TriggerDamageEffect();
         }
     }
 
@@ -73,6 +77,22 @@ public class BirdController : MonoBehaviour
         if (destructionParticle != null)
         {
             ParticleSystem particleInstance = Instantiate(destructionParticle, transform.position, Quaternion.identity);
+            particleInstance.Play();
+
+            // 파티클이 끝난 뒤 자동으로 제거
+            Destroy(particleInstance.gameObject, particleInstance.main.duration + particleInstance.main.startLifetime.constantMax);
+        }
+    }
+
+    private void TriggerDamageEffect()
+    {
+        if (damageParticle != null)
+        {
+            ParticleSystem particleInstance = Instantiate(damageParticle, transform.position, Quaternion.identity);
+
+            // 크기 조정
+            particleInstance.transform.localScale *= 1.6f;
+
             particleInstance.Play();
 
             // 파티클이 끝난 뒤 자동으로 제거
