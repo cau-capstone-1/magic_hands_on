@@ -8,6 +8,8 @@ public class BirdController : MonoBehaviour
     private float attackDistance = 1.5f; // 플레이어에 도달하는 거리 임계값
     public float SpawnTime { get; private set; } // 새가 생성된 시간 기록
 
+    [SerializeField] private ParticleSystem destructionParticle; // 파괴 시 파티클
+
     public void Initialize(string color, Transform target, int hp, float spawnTime)
     {
         BirdColor = color;
@@ -42,11 +44,25 @@ public class BirdController : MonoBehaviour
     {
         hp--;
         Debug.Log($"Bird {BirdColor} took damage. HP remaining: {hp}");
+        TriggerDestructionEffect(); // 파괴 효과 실행
         if (hp <= 0)
         {
             GameSceneController gameController = FindObjectOfType<GameSceneController>();
             gameController.DisplayActionTextBasedOnTime(this); // 시간에 따른 ActionText 표시
+
             Destroy(gameObject);
+        }
+    }
+
+    private void TriggerDestructionEffect()
+    {
+        if (destructionParticle != null)
+        {
+            ParticleSystem particleInstance = Instantiate(destructionParticle, transform.position, Quaternion.identity);
+            particleInstance.Play();
+
+            // 파티클이 끝난 뒤 자동으로 제거
+            Destroy(particleInstance.gameObject, particleInstance.main.duration + particleInstance.main.startLifetime.constantMax);
         }
     }
 

@@ -188,5 +188,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a7a93f97696f0f458e3f98969edd708, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BirdColor: Black
-  HP: 3
+  destructionParticle: {fileID: 8916908749715170831, guid: e65b334f568873344b7c278fbd4a5018, type: 3}
