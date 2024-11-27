@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayCountValueBinding : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void OnEnable()
     {
         GameObject currentObject = this.gameObject;
         currentObject.GetComponent<TMPro.TextMeshProUGUI>().text = GameData.instance.playCount.ToString() + '회';
