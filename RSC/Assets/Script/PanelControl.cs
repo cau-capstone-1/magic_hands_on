@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,8 +14,10 @@ public class PanelControl : MonoBehaviour
     {
         // ���� �� ��� �г� ����� 0�� �гθ� Ȱ��ȭ
         HideAllPanels();
+
         if (panels.Count > 0)
         {
+            Debug.Log("PanelControl Start");
             panels[0].SetActive(true);
             panels[0].transform.localPosition = Vector3.zero;
         }

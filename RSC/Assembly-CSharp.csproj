@@ -72,6 +72,7 @@
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/TMP_TextSelector_A.cs" />
     <Compile Include="Assets/Layer Lab/Scripts/PanelControl.cs" />
     <Compile Include="Assets/Script/GameScene/GameSceneController.cs" />
+    <Compile Include="Assets/MyInfoUserName.cs" />
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/Benchmark02.cs" />
     <Compile Include="Assets/Script/GameScene/GameTimer.cs" />
     <Compile Include="Assets/TopBarScript.cs" />
