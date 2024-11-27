@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using UnityEditor.Animations;
 using UnityEngine;
 
 public class PanelControl : MonoBehaviour
@@ -21,6 +22,32 @@ public class PanelControl : MonoBehaviour
             panels[0].SetActive(true);
             panels[0].transform.localPosition = Vector3.zero;
         }
+    }
+
+
+    public void GameStart(int level) {
+        int index = panels.FindIndex(panel => panel.name == "Levels");
+
+        if (index < 0 || index >= panels.Count || index == currentPanelIndex)
+            return;
+
+        // ���� �г��� �����̵� �ƿ��ϰ� �� �г��� �����̵� ��
+        StartCoroutine(SlidePanel(currentPanelIndex, index));
+        currentPanelIndex = index;
+
+        GameObject levels = panels.Find(panel => panel.name == "Levels");
+        GameObject levelObject = levels.transform.GetChild(level - 1).gameObject;
+
+        for (int i = 0; i < levels.transform.childCount; i++) {
+            if (i == level - 1) {
+                levels.transform.GetChild(i).gameObject.SetActive(true);
+            } else {
+                levels.transform.GetChild(i).gameObject.SetActive(false);
+            }
+        }
+
+        // 게임 횟수 증가
+        GameData.instance.playCount = GameData.instance.playCount + 1;
     }
 
     public void ShowPanel(string name) {

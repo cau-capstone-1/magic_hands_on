@@ -56,6 +56,7 @@ public class Register : MonoBehaviour {
         }
 
         GameData.instance.playerName = text;
+        GameData.instance.startedAt = DateTime.Today.ToString("yyyy년 MM월 dd일");
 
         nameInput.SetActive(false);
         welcome.SetActive(true);
