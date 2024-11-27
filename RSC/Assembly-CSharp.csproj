@@ -109,6 +109,7 @@
     <Compile Include="Assets/Register.cs" />
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/Benchmark03.cs" />
     <Compile Include="Assets/Script/GameController.cs" />
+    <Compile Include="Assets/PlayCountValueBinding.cs" />
     <Compile Include="Assets/SubmitScript.cs" />
     <Compile Include="Assets/Script/Title/TitleAnimationController.cs" />
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/DropdownSample.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Assets/Layer Lab/Scripts/PanelView.cs" />
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/TMP_TextEventCheck.cs" />
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/TextMeshProFloatingText.cs" />
+    <Compile Include="Assets/FirstStartedAtValueBinding.cs" />
     <Compile Include="Assets/GameData.cs" />
   </ItemGroup>
   <ItemGroup>
