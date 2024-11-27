@@ -29,6 +29,7 @@ public class PopupController : MonoBehaviour
     // Ư�� �˾��� ���� �޼��� (���̵� ��)
     public void ShowPopup(string popupName)
     {
+        Debug.Log(popupCanvasGroups.Values.ToString());
         foreach (var popup in popups)
         {
             if (popup.name == popupName)
@@ -55,6 +56,7 @@ public class PopupController : MonoBehaviour
     private IEnumerator FadeIn(CanvasGroup canvasGroup)
     {
         canvasGroup.gameObject.SetActive(true);
+        Debug.Log("FadeIn" + canvasGroup.name + gameObject.name);
         float elapsedTime = 0f;
         while (elapsedTime < fadeDuration)
         {
