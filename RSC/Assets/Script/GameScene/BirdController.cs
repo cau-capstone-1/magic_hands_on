@@ -5,43 +5,48 @@ public class BirdController : MonoBehaviour
     public string BirdColor { get; private set; }
     private Transform target;
     private int hp;
-    private float attackDistance = 1.5f; // ÇÃ·¹ÀÌ¾î¿¡ µµ´ÞÇÏ´Â °Å¸® ÀÓ°è°ª
-    public float SpawnTime { get; private set; } // »õ°¡ »ý¼ºµÈ ½Ã°£ ±â·Ï
+    private float attackDistance = 1.5f; // ï¿½Ã·ï¿½ï¿½Ì¾î¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Å¸ï¿½ ï¿½Ó°è°ª
+    public float SpawnTime { get; private set; } // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½
 
-    [SerializeField] private ParticleSystem damageParticle; // ÆÄ±« ½Ã ÆÄÆ¼Å¬
-    [SerializeField] private ParticleSystem destructionParticle; // ÆÄ±« ½Ã ÆÄÆ¼Å¬
-    [SerializeField] private AudioClip damageSound; // µ¥¹ÌÁö »ç¿îµå
-    private AudioSource audioSource; // AudioSource ÄÄÆ÷³ÍÆ®
+    [SerializeField]
+    private ParticleSystem damageParticle; // ï¿½Ä±ï¿½ ï¿½ï¿½ ï¿½ï¿½Æ¼Å¬
+
+    [SerializeField]
+    private ParticleSystem destructionParticle; // ï¿½Ä±ï¿½ ï¿½ï¿½ ï¿½ï¿½Æ¼Å¬
+
+    [SerializeField]
+    private AudioClip damageSound; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    private AudioSource audioSource; // AudioSource ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 
     public void Initialize(string color, Transform target, int hp, float spawnTime)
     {
         BirdColor = color;
         this.target = target;
         this.hp = hp;
-        SpawnTime = spawnTime; // »ý¼º ½Ã°£ ÃÊ±âÈ­
+        SpawnTime = spawnTime; // ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½Ê±ï¿½È­
     }
 
     private void Start()
     {
-        // AudioSource ÄÄÆ÷³ÍÆ®¸¦ °¡Á®¿À°Å³ª Ãß°¡
+        // AudioSource ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å³ï¿½ ï¿½ß°ï¿½
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
-        audioSource.playOnAwake = false; // ÀÚµ¿ Àç»ý ºñÈ°¼ºÈ­
+        audioSource.playOnAwake = false; // ï¿½Úµï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­
     }
 
     private void Update()
     {
         MoveTowardsTarget();
 
-        // ÇÃ·¹ÀÌ¾î¿¡ °¡±îÀÌ µµ´ÞÇß´ÂÁö È®ÀÎ
+        // ï¿½Ã·ï¿½ï¿½Ì¾î¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½ È®ï¿½ï¿½
         if (Vector3.Distance(transform.position, target.position) < attackDistance)
         {
             GameSceneController gameController = FindObjectOfType<GameSceneController>();
-            gameController.TakeDamage(1); // ÇÃ·¹ÀÌ¾î HP¸¦ 1 °¨¼Ò
-            Destroy(gameObject); // »õ Á¦°Å
+            gameController.TakeDamage(1); // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ HPï¿½ï¿½ 1 ï¿½ï¿½ï¿½ï¿½
+            Destroy(gameObject); // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
     }
 
@@ -61,12 +66,18 @@ public class BirdController : MonoBehaviour
         if (hp <= 0)
         {
             GameSceneController gameController = FindObjectOfType<GameSceneController>();
-            gameController.DisplayActionTextBasedOnTime(this); // ½Ã°£¿¡ µû¸¥ ActionText Ç¥½Ã
+            gameController.DisplayActionTextBasedOnTime(this); // ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ActionText Ç¥ï¿½ï¿½
 
-            PlayDamageSound(); // µ¥¹ÌÁö »ç¿îµå Àç»ý
-            TriggerDestructionEffect(); // ÆÄ±« È¿°ú ½ÇÇà
+            PlayDamageSound(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+            TriggerDestructionEffect(); // ï¿½Ä±ï¿½ È¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             Destroy(gameObject);
-        } else
+
+            if (BirdColor == "Black")
+            {
+                GameData.instance.blackBirdUsageCount += 1;
+            }
+        }
+        else
         {
             TriggerDamageEffect();
         }
@@ -76,11 +87,18 @@ public class BirdController : MonoBehaviour
     {
         if (destructionParticle != null)
         {
-            ParticleSystem particleInstance = Instantiate(destructionParticle, transform.position, Quaternion.identity);
+            ParticleSystem particleInstance = Instantiate(
+                destructionParticle,
+                transform.position,
+                Quaternion.identity
+            );
             particleInstance.Play();
 
-            // ÆÄÆ¼Å¬ÀÌ ³¡³­ µÚ ÀÚµ¿À¸·Î Á¦°Å
-            Destroy(particleInstance.gameObject, particleInstance.main.duration + particleInstance.main.startLifetime.constantMax);
+            // ï¿½ï¿½Æ¼Å¬ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            Destroy(
+                particleInstance.gameObject,
+                particleInstance.main.duration + particleInstance.main.startLifetime.constantMax
+            );
         }
     }
 
@@ -88,15 +106,22 @@ public class BirdController : MonoBehaviour
     {
         if (damageParticle != null)
         {
-            ParticleSystem particleInstance = Instantiate(damageParticle, transform.position, Quaternion.identity);
+            ParticleSystem particleInstance = Instantiate(
+                damageParticle,
+                transform.position,
+                Quaternion.identity
+            );
 
-            // Å©±â Á¶Á¤
+            // Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             particleInstance.transform.localScale *= 1.6f;
 
             particleInstance.Play();
 
-            // ÆÄÆ¼Å¬ÀÌ ³¡³­ µÚ ÀÚµ¿À¸·Î Á¦°Å
-            Destroy(particleInstance.gameObject, particleInstance.main.duration + particleInstance.main.startLifetime.constantMax);
+            // ï¿½ï¿½Æ¼Å¬ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            Destroy(
+                particleInstance.gameObject,
+                particleInstance.main.duration + particleInstance.main.startLifetime.constantMax
+            );
         }
     }
 

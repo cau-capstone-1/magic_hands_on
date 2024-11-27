@@ -1,52 +1,105 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class GameSceneController : MonoBehaviour
 {
-    [SerializeField] private GameTimer gameTimer; // GameTimer ��ũ��Ʈ�� ����
-    [SerializeField] private GameObject character;
-    [SerializeField] private Text tutorialText;
-    [SerializeField] private CanvasGroup tutorialCanvasGroup;
-    [SerializeField] private CanvasGroup dimCanvasGroup;
-    [SerializeField] private List<GameObject> birdPrefabs;
-    [SerializeField] private float birdSpawnInterval = 3.0f;
-    [SerializeField] private int birdHp = 3;
-    [SerializeField] private int playerHP = 10;
-    [SerializeField] private SoundController soundController;
-    [SerializeField] private TextMeshProUGUI hpText;
+    [SerializeField]
+    private GameTimer gameTimer; // GameTimer ��ũ��Ʈ�� ����
 
-    [SerializeField] private GameObject actionTextGood;
-    [SerializeField] private GameObject actionTextGreat;
-    [SerializeField] private GameObject actionTextPerfect;
+    [SerializeField]
+    private GameObject character;
 
-    [SerializeField] private CanvasGroup GameOverCanvasGroup;
-    [SerializeField] private CanvasGroup GameClearCanvasGroup;
-    [SerializeField] private Transform parentObject; // ���� ������ �θ� ������Ʈ
+    [SerializeField]
+    private Text tutorialText;
 
-    [SerializeField] private Slider leftSlider; // ���� �����̴�
-    [SerializeField] private Slider rightSlider; // ������ �����̴�
-    [SerializeField] private Button leftSliderButton; // ���� �����̴��� ��ư
-    [SerializeField] private Button rightSliderButton; // ������ �����̴��� ��ư
+    [SerializeField]
+    private CanvasGroup tutorialCanvasGroup;
 
-    [SerializeField] private PanelControl Panel;
+    [SerializeField]
+    private CanvasGroup dimCanvasGroup;
 
-    [SerializeField] private ParticleSystem damageParticle; // �ı� �� ��ƼŬ
-    [SerializeField] private ParticleSystem leftItemParticle; // ������ ��ƼŬ
-    [SerializeField] private ParticleSystem rightItemParticle; // ������ ��ƼŬ
-    [SerializeField] private ParticleSystem hpParticle; // ������ ��ƼŬ
+    [SerializeField]
+    private List<GameObject> birdPrefabs;
+
+    [SerializeField]
+    private float birdSpawnInterval = 3.0f;
+
+    [SerializeField]
+    private int birdHp = 3;
+
+    [SerializeField]
+    private int playerHP = 10;
+
+    [SerializeField]
+    private SoundController soundController;
+
+    [SerializeField]
+    private TextMeshProUGUI hpText;
+
+    [SerializeField]
+    private GameObject actionTextGood;
+
+    [SerializeField]
+    private GameObject actionTextGreat;
+
+    [SerializeField]
+    private GameObject actionTextPerfect;
+
+    [SerializeField]
+    private CanvasGroup GameOverCanvasGroup;
+
+    [SerializeField]
+    private CanvasGroup GameClearCanvasGroup;
+
+    [SerializeField]
+    private Transform parentObject; // ���� ������ �θ� ������Ʈ
+
+    [SerializeField]
+    private Slider leftSlider; // ���� �����̴�
+
+    [SerializeField]
+    private Slider rightSlider; // ������ �����̴�
+
+    [SerializeField]
+    private Button leftSliderButton; // ���� �����̴��� ��ư
+
+    [SerializeField]
+    private Button rightSliderButton; // ������ �����̴��� ��ư
+
+    [SerializeField]
+    private PanelControl Panel;
+
+    [SerializeField]
+    private ParticleSystem damageParticle; // �ı� �� ��ƼŬ
+
+    [SerializeField]
+    private ParticleSystem leftItemParticle; // ������ ��ƼŬ
+
+    [SerializeField]
+    private ParticleSystem rightItemParticle; // ������ ��ƼŬ
+
+    [SerializeField]
+    private ParticleSystem hpParticle; // ������ ��ƼŬ
 
     private void TriggerDamageEffect()
     {
         if (damageParticle != null)
         {
-            ParticleSystem particleInstance = Instantiate(damageParticle, character.transform.position, Quaternion.identity);
+            ParticleSystem particleInstance = Instantiate(
+                damageParticle,
+                character.transform.position,
+                Quaternion.identity
+            );
             particleInstance.Play();
 
             // ��ƼŬ�� ���� �� �ڵ����� ����
-            Destroy(particleInstance.gameObject, particleInstance.main.duration + particleInstance.main.startLifetime.constantMax);
+            Destroy(
+                particleInstance.gameObject,
+                particleInstance.main.duration + particleInstance.main.startLifetime.constantMax
+            );
         }
     }
 
@@ -54,26 +107,48 @@ public class GameSceneController : MonoBehaviour
     {
         if (leftItemParticle != null)
         {
-            ParticleSystem particleInstance = Instantiate(leftItemParticle, character.transform.position, Quaternion.identity);
+            ParticleSystem particleInstance = Instantiate(
+                leftItemParticle,
+                character.transform.position,
+                Quaternion.identity
+            );
             particleInstance.Play();
 
             // ��ƼŬ�� ���� �� �ڵ����� ����
-            Destroy(particleInstance.gameObject, particleInstance.main.duration + particleInstance.main.startLifetime.constantMax);
+            Destroy(
+                particleInstance.gameObject,
+                particleInstance.main.duration + particleInstance.main.startLifetime.constantMax
+            );
         }
     }
+
     private void TriggerRightItemEffect()
     {
         if (rightItemParticle != null && hpParticle != null)
         {
-            ParticleSystem particleInstance = Instantiate(rightItemParticle, character.transform.position, Quaternion.identity);
+            ParticleSystem particleInstance = Instantiate(
+                rightItemParticle,
+                character.transform.position,
+                Quaternion.identity
+            );
             particleInstance.Play();
 
-            ParticleSystem particleInstance2 = Instantiate(hpParticle, hpText.transform.position, Quaternion.identity);
+            ParticleSystem particleInstance2 = Instantiate(
+                hpParticle,
+                hpText.transform.position,
+                Quaternion.identity
+            );
             particleInstance2.Play();
 
             // ��ƼŬ�� ���� �� �ڵ����� ����
-            Destroy(particleInstance.gameObject, particleInstance.main.duration + particleInstance.main.startLifetime.constantMax);
-            Destroy(particleInstance2.gameObject, particleInstance2.main.duration + particleInstance2.main.startLifetime.constantMax);
+            Destroy(
+                particleInstance.gameObject,
+                particleInstance.main.duration + particleInstance.main.startLifetime.constantMax
+            );
+            Destroy(
+                particleInstance2.gameObject,
+                particleInstance2.main.duration + particleInstance2.main.startLifetime.constantMax
+            );
         }
     }
 
@@ -85,7 +160,7 @@ public class GameSceneController : MonoBehaviour
         { KeyCode.C, "Green" },
         { KeyCode.V, "Blue" },
         { KeyCode.B, "Red" },
-        { KeyCode.N, "Brown" }
+        { KeyCode.N, "Brown" },
     };
 
     private Coroutine tutorialCoroutine;
@@ -156,11 +231,17 @@ public class GameSceneController : MonoBehaviour
         RectTransform rectTransform = actionText.GetComponent<RectTransform>();
         if (rectTransform != null)
         {
-            rectTransform.localPosition = new Vector3(rectTransform.localPosition.x, 0, rectTransform.localPosition.z); // Y ��ġ�� 0���� ����
+            rectTransform.localPosition = new Vector3(
+                rectTransform.localPosition.x,
+                0,
+                rectTransform.localPosition.z
+            ); // Y ��ġ�� 0���� ����
         }
         else
         {
-            Debug.LogWarning($"{actionText.name}�� RectTransform�� �����ϴ�. RectTransform�� �߰��� �ּ���.");
+            Debug.LogWarning(
+                $"{actionText.name}�� RectTransform�� �����ϴ�. RectTransform�� �߰��� �ּ���."
+            );
         }
     }
 
@@ -173,7 +254,9 @@ public class GameSceneController : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"{actionText.name}�� CanvasGroup�� �����ϴ�. CanvasGroup�� �߰��� �ּ���.");
+            Debug.LogWarning(
+                $"{actionText.name}�� CanvasGroup�� �����ϴ�. CanvasGroup�� �߰��� �ּ���."
+            );
         }
     }
 
@@ -255,7 +338,6 @@ public class GameSceneController : MonoBehaviour
         }
     }
 
-
     private void SpawnRandomBird()
     {
         int randomIndex;
@@ -280,13 +362,18 @@ public class GameSceneController : MonoBehaviour
         }
 
         // Instantiate �޼��忡�� �θ� ������Ʈ�� ����
-        birdInstance = Instantiate(birdPrefabs[randomIndex], spawnPosition, Quaternion.identity, parentObject);
+        birdInstance = Instantiate(
+            birdPrefabs[randomIndex],
+            spawnPosition,
+            Quaternion.identity,
+            parentObject
+        );
 
         birdInstance.transform.localScale = new Vector3(spawnLeft ? -0.3f : 0.3f, 0.3f, 0.3f);
 
         BirdController birdController = birdInstance.GetComponent<BirdController>();
         birdController.Initialize(birdColor, character.transform, birdHp, Time.time); // ���� �ð� ����
-     
+
         Debug.Log($"Spawned Bird Color: {birdColor}, Initial HP: 3");
     }
 
@@ -315,22 +402,30 @@ public class GameSceneController : MonoBehaviour
         float x = Random.Range(-screenHalfWidth * 1.0f, screenHalfWidth * 1.0f);
         float y = Random.Range(-screenHalfHeight * 1.0f, screenHalfHeight * 1.0f);
 
-        if (x > -screenHalfWidth && x < screenHalfWidth) x = x < 0 ? -screenHalfWidth * 1.0f : screenHalfWidth * 1.0f;
-        if (y > -screenHalfHeight && y < screenHalfHeight) y = y < 0 ? -screenHalfHeight * 1.0f : screenHalfHeight * 1.0f;
+        if (x > -screenHalfWidth && x < screenHalfWidth)
+            x = x < 0 ? -screenHalfWidth * 1.0f : screenHalfWidth * 1.0f;
+        if (y > -screenHalfHeight && y < screenHalfHeight)
+            y = y < 0 ? -screenHalfHeight * 1.0f : screenHalfHeight * 1.0f;
 
         return new Vector3(x, y, 0);
     }
 
     private void Update()
     {
-        if (!isGameStarted) return; // ������ ���۵� ���¿����� ������Ʈ
-        if (gameTimer.elapsedTime >= 120) GameDone();
+        if (!isGameStarted)
+            return; // ������ ���۵� ���¿����� ������Ʈ
+        if (gameTimer.elapsedTime >= 120)
+            GameDone();
 
         // Ű �Է��� �ﰢ������ �����Ͽ� HandleBirdDamage�� ����
-        if (Input.GetKeyDown(KeyCode.Z)) HandleBirdDamage("Yellow");
-        if (Input.GetKeyDown(KeyCode.X)) HandleBirdDamage("Black");
-        if (Input.GetKeyDown(KeyCode.C)) HandleBirdDamage("Green");
-        if (Input.GetKeyDown(KeyCode.V)) HandleBirdDamage("Blue");
+        if (Input.GetKeyDown(KeyCode.Z))
+            HandleBirdDamage("Yellow");
+        if (Input.GetKeyDown(KeyCode.X))
+            HandleBirdDamage("Black");
+        if (Input.GetKeyDown(KeyCode.C))
+            HandleBirdDamage("Green");
+        if (Input.GetKeyDown(KeyCode.V))
+            HandleBirdDamage("Blue");
     }
 
     private void CheckInputForBirds()
@@ -350,7 +445,8 @@ public class GameSceneController : MonoBehaviour
     // HandleBirdDamage �޼��忡���� ���� ���� ���� Ȯ�� �߰�
     private void HandleBirdDamage(string color)
     {
-        if (!isGameStarted) return; // ���� ���� ���¿����� ������ ���ظ� �� �� ����
+        if (!isGameStarted)
+            return; // ���� ���� ���¿����� ������ ���ظ� �� �� ����
 
         BirdController[] birds = FindObjectsOfType<BirdController>();
         bool damageApplied = false;
@@ -419,7 +515,9 @@ public class GameSceneController : MonoBehaviour
         foreach (var bird in birds)
         {
             bird.TakeDamage(); // ��� ������ ������ 1 �ֱ�
-            Debug.Log($"All Birds Damaged, Bird Color: {bird.BirdColor}, Current HP: {bird.GetCurrentHP()}");
+            Debug.Log(
+                $"All Birds Damaged, Bird Color: {bird.BirdColor}, Current HP: {bird.GetCurrentHP()}"
+            );
         }
 
         leftSlider.value = 0; // �����̴� �ʱ�ȭ
@@ -438,13 +536,16 @@ public class GameSceneController : MonoBehaviour
         rightSliderButton.interactable = false;
         soundController.PlaySound(7);
         TriggerRightItemEffect();
+
+        GameData.instance.healUsageCount += 1;
     }
 
     private IEnumerator BlinkBird(BirdController bird)
     {
         SpriteRenderer renderer = bird.GetComponent<SpriteRenderer>();
 
-        if (renderer == null) yield break; // SpriteRenderer�� ���� ��� �ڷ�ƾ ����
+        if (renderer == null)
+            yield break; // SpriteRenderer�� ���� ��� �ڷ�ƾ ����
 
         for (int i = 0; i < 2; i++)
         {
@@ -485,7 +586,7 @@ public class GameSceneController : MonoBehaviour
     public void TakeDamage(int amount)
     {
         playerHP -= amount;
-        hpText.text = $"{playerHP}";  // .text ������Ƽ�� ���� �ؽ�Ʈ ����
+        hpText.text = $"{playerHP}"; // .text ������Ƽ�� ���� �ؽ�Ʈ ����
         Debug.Log($"Player HP: {playerHP}");
         StartCoroutine(BlinkCharacter()); // �÷��̾� ������ ȿ��
         soundController.PlaySound(5);
@@ -501,7 +602,7 @@ public class GameSceneController : MonoBehaviour
     {
         isGameStarted = false; // ������ ���� �������� ǥ��
         gameTimer.enabled = false; // Ÿ�̸� ����
-        StartCoroutine(FadeInCanvasGroup(GameOverCanvasGroup, 1.0f)); // GameOverCanvasGroup 
+        StartCoroutine(FadeInCanvasGroup(GameOverCanvasGroup, 1.0f)); // GameOverCanvasGroup
         GameOverCanvasGroup.gameObject.SetActive(true); // GameOver ȭ�� ǥ��
         soundController.PlaySound(3);
 
@@ -521,7 +622,7 @@ public class GameSceneController : MonoBehaviour
     {
         isGameStarted = false; // ������ ���� �������� ǥ��
         gameTimer.enabled = false; // Ÿ�̸� ����
-        StartCoroutine(FadeInCanvasGroup(GameClearCanvasGroup, 1.0f)); // GameClearCanvasGroup 
+        StartCoroutine(FadeInCanvasGroup(GameClearCanvasGroup, 1.0f)); // GameClearCanvasGroup
         GameClearCanvasGroup.gameObject.SetActive(true); // GameOver ȭ�� ǥ��
         soundController.PlaySound(4);
 
@@ -601,7 +702,6 @@ public class GameSceneController : MonoBehaviour
             DisplayActionText("Good");
         }
     }
-
 
     private IEnumerator AnimateActionText(GameObject actionText)
     {

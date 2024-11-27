@@ -36,6 +36,33 @@ public class GameData : MonoBehaviour
         }
     }
 
+    public int healUsageCount {
+        get {
+            if (PlayerPrefs.HasKey("healUsageCount") == false) {
+                return 0;
+            }
+            
+            return PlayerPrefs.GetInt("healUsageCount");
+        }
+        set {
+            PlayerPrefs.SetInt("healUsageCount", value);
+        }
+    }
+
+    public int blackBirdUsageCount {
+        get {
+            if (PlayerPrefs.HasKey("blackBirdUsageCount") == false) {
+                return 0;
+            }
+            
+            return PlayerPrefs.GetInt("blackBirdUsageCount");
+        }
+        set {
+            PlayerPrefs.SetInt("blackBirdUsageCount", value);
+        }
+    }
+
+
     private void Awake() {
         if (instance == null) {
             instance = this;
