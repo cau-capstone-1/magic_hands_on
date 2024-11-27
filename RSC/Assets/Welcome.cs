@@ -5,7 +5,7 @@ public class Welcome : MonoBehaviour
     private Animation animation;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private void Start()
+    private void OnEnable()
     {
         animation = GetComponent<Animation>();
         GameObject textObj = GameObject.Find("NameText");
