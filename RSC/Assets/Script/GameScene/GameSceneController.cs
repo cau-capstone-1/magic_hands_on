@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 public class GameSceneController : MonoBehaviour
@@ -171,6 +170,8 @@ public class GameSceneController : MonoBehaviour
 
     private bool isGameStarted = false;
 
+    private System.DateTime startedAt;
+
     private void Start()
     {
         characterAnimator = character.GetComponent<Animator>(); // Animator ������Ʈ ��������
@@ -215,6 +216,7 @@ public class GameSceneController : MonoBehaviour
     private void StartGame()
     {
         isGameStarted = true;
+        startedAt = System.DateTime.Now;
         StartCoroutine(FadeOutCanvasGroup(dimCanvasGroup, 1.0f)); // Dim ȭ�� ���̵� �ƿ�
         StartCoroutine(SpawnBirds()); // �� ���� ����
         gameTimer.enabled = true; // Ÿ�̸� ����
@@ -631,6 +633,8 @@ public class GameSceneController : MonoBehaviour
 
         // 게임 종료 시 남은 Life Point 당 200점
         score += playerHP * 200;
+
+        GameData.instance.AddStat(new GamePlayStat(score, startedAt));
 
         // BirdParent ���� ��� ������Ʈ ����
         foreach (Transform child in parentObject)
