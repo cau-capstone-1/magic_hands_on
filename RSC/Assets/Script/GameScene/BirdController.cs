@@ -18,8 +18,17 @@ public class BirdController : MonoBehaviour
     private AudioClip damageSound; // ������ ����
     private AudioSource audioSource; // AudioSource ������Ʈ
 
-    public void Initialize(string color, Transform target, int hp, float spawnTime)
+    private GameSceneController gameSceneController;
+
+    public void Initialize(
+        GameSceneController gameSceneController,
+        string color,
+        Transform target,
+        int hp,
+        float spawnTime
+    )
     {
+        this.gameSceneController = gameSceneController;
         BirdColor = color;
         this.target = target;
         this.hp = hp;
@@ -44,8 +53,7 @@ public class BirdController : MonoBehaviour
         // �÷��̾ ������ �����ߴ��� Ȯ��
         if (Vector3.Distance(transform.position, target.position) < attackDistance)
         {
-            GameSceneController gameController = FindObjectOfType<GameSceneController>();
-            gameController.TakeDamage(1); // �÷��̾� HP�� 1 ����
+            this.gameSceneController.TakeDamage(1); // �÷��̾� HP�� 1 ����
             Destroy(gameObject); // �� ����
         }
     }
@@ -75,6 +83,21 @@ public class BirdController : MonoBehaviour
             if (BirdColor == "Black")
             {
                 GameData.instance.blackBirdUsageCount += 1;
+            }
+
+            // 적 처치 시 100점 추가
+            this.gameSceneController.score += 100;
+
+            float elapsedTime = Time.time - this.SpawnTime;
+
+            // 빨리 처치하면 추가 점수
+            if (elapsedTime < 2f)
+            {
+                this.gameSceneController.score += 50;
+            }
+            else if (elapsedTime < 4f)
+            {
+                this.gameSceneController.score += 25;
             }
         }
         else

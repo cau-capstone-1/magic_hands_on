@@ -84,6 +84,8 @@ public class GameSceneController : MonoBehaviour
     [SerializeField]
     private ParticleSystem hpParticle; // ������ ��ƼŬ
 
+    public int score = 0;
+
     private void TriggerDamageEffect()
     {
         if (damageParticle != null)
@@ -168,6 +170,8 @@ public class GameSceneController : MonoBehaviour
 
     private bool isGameStarted = false;
 
+    private System.DateTime startedAt;
+
     private void Start()
     {
         characterAnimator = character.GetComponent<Animator>(); // Animator ������Ʈ ��������
@@ -212,6 +216,7 @@ public class GameSceneController : MonoBehaviour
     private void StartGame()
     {
         isGameStarted = true;
+        startedAt = System.DateTime.Now;
         StartCoroutine(FadeOutCanvasGroup(dimCanvasGroup, 1.0f)); // Dim ȭ�� ���̵� �ƿ�
         StartCoroutine(SpawnBirds()); // �� ���� ����
         gameTimer.enabled = true; // Ÿ�̸� ����
@@ -326,7 +331,7 @@ public class GameSceneController : MonoBehaviour
         birdInstance.transform.position = GetRandomOffScreenPosition();
 
         BirdController birdController = birdInstance.GetComponent<BirdController>();
-        birdController.Initialize("Yellow", character.transform, 1, Time.time); // Yellow �� ���� �� �ʱ�ȭ, ���� �ð� ���
+        birdController.Initialize(this, "Yellow", character.transform, 1, Time.time); // Yellow �� ���� �� �ʱ�ȭ, ���� �ð� ���
     }
 
     private IEnumerator SpawnBirds()
@@ -372,7 +377,7 @@ public class GameSceneController : MonoBehaviour
         birdInstance.transform.localScale = new Vector3(spawnLeft ? -0.3f : 0.3f, 0.3f, 0.3f);
 
         BirdController birdController = birdInstance.GetComponent<BirdController>();
-        birdController.Initialize(birdColor, character.transform, birdHp, Time.time); // ���� �ð� ����
+        birdController.Initialize(this, birdColor, character.transform, birdHp, Time.time); // ���� �ð� ����
 
         Debug.Log($"Spawned Bird Color: {birdColor}, Initial HP: 3");
     }
@@ -626,13 +631,16 @@ public class GameSceneController : MonoBehaviour
         GameClearCanvasGroup.gameObject.SetActive(true); // GameOver ȭ�� ǥ��
         soundController.PlaySound(4);
 
+        // 게임 종료 시 남은 Life Point 당 200점
+        score += playerHP * 200;
+
+        GameData.instance.AddStat(new GamePlayStat(score, startedAt));
+
         // BirdParent ���� ��� ������Ʈ ����
         foreach (Transform child in parentObject)
         {
             Destroy(child.gameObject);
         }
-
-        Debug.Log("���� �Ϸ�");
 
         // 5�� �ڿ� �ٸ� �Լ� ȣ��
         StartCoroutine(ExecuteAfterDelay(5.0f, BackToPanelStage));
