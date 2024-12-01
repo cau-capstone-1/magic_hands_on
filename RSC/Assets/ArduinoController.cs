@@ -1,30 +1,60 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System.IO.Ports;
 
 public class ArduinoController : MonoBehaviour
 {
-    SerialPort serialPort = new SerialPort("COM3", 9600); // COM 포트와 바우드레이트 설정
+    SerialPort serialPort = new SerialPort("COM3", 9600); // 시리얼 포트와 보드레이트 설정
     private string incomingData = ""; // 들어오는 데이터를 저장할 변수
 
     void Start()
     {
-        serialPort.Open(); // 시리얼 포트 열기
-        serialPort.ReadTimeout = 50; // 읽기 타임아웃 설정
+        try
+        {
+            if (!serialPort.IsOpen) // 포트가 열려 있지 않으면 열기
+            {
+                serialPort.Open(); // 시리얼 포트 열기
+                serialPort.ReadTimeout = 1000; // 읽기 타임아웃 설정 (1초)
+                Debug.Log("Serial port opened successfully on " + serialPort.PortName);
+            }
+
+            // 시리얼 데이터를 읽는 코루틴 시작
+            StartCoroutine(ReadSerialData());
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("Failed to open serial port: " + e.Message);
+        }
     }
 
-    void Update()
+    IEnumerator ReadSerialData()
     {
-        // 시리얼 포트에서 데이터를 읽어옴
-        if (serialPort.IsOpen)
+        while (true)
         {
-            try
+            if (serialPort != null && serialPort.IsOpen)
             {
-                incomingData = serialPort.ReadLine().Trim(); // 한 줄 읽고 공백 제거
-                HandleInput(incomingData);
+                try
+                {
+                    // 시리얼 포트에서 데이터 읽기
+                    incomingData = serialPort.ReadLine().Trim();
+                    if (!string.IsNullOrEmpty(incomingData))
+                    {
+                        Debug.Log("Received Data: " + incomingData);
+                        HandleInput(incomingData);
+                    }
+                }
+                catch (System.TimeoutException)
+                {
+                    // 타임아웃 발생 시 무시
+                }
+                catch (System.Exception ex)
+                {
+                    Debug.LogError("Error reading from serial port: " + ex.Message);
+                }
             }
-            catch (System.Exception) { }
+
+            // 0.1초 대기 후 다시 읽기
+            yield return new WaitForSeconds(0.1f);
         }
     }
 
@@ -46,6 +76,7 @@ public class ArduinoController : MonoBehaviour
                 SimulateKeyPress(KeyCode.V);
                 break;
             default:
+                Debug.LogWarning("Unhandled data: " + data);
                 break;
         }
     }
@@ -53,19 +84,17 @@ public class ArduinoController : MonoBehaviour
     // 키 입력을 시뮬레이션하는 함수
     private void SimulateKeyPress(KeyCode key)
     {
-        // 유니티에서 키 입력을 감지하는 방법
-        if (Input.GetKeyDown(key))
-        {
-            // 여기에 키 입력에 반응하는 코드를 추가
-            Debug.Log(key + " key pressed.");
-        }
+        // 키 입력 시뮬레이션 동작을 로그로 출력
+        Debug.Log("Simulated Key Press: " + key);
     }
 
     private void OnDestroy()
     {
+        // Unity 종료 시 시리얼 포트를 안전하게 닫기
         if (serialPort != null && serialPort.IsOpen)
         {
-            serialPort.Close(); // 시리얼 포트 닫기
+            serialPort.Close();
+            Debug.Log("Serial port closed.");
         }
     }
 }
