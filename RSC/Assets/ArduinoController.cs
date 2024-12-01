@@ -6,6 +6,7 @@ public class ArduinoController : MonoBehaviour
 {
     SerialPort serialPort = new SerialPort("COM3", 9600); // 시리얼 포트와 보드레이트 설정
     private string incomingData = ""; // 들어오는 데이터를 저장할 변수
+    public string resultData = "";
 
     void Start()
     {
@@ -58,21 +59,36 @@ public class ArduinoController : MonoBehaviour
         }
     }
 
+    public void ResetData()
+    {
+        resultData = "";
+    }
+
     // 데이터를 받아서 키 입력을 시뮬레이션하는 함수
     private void HandleInput(string data)
     {
         switch (data)
         {
+            case "1":
+                resultData = "1";
+                break;
+            case "2":
+                resultData = "2";
+                break;
             case "3":
+                resultData = "3";
                 SimulateKeyPress(KeyCode.Z);
                 break;
             case "4":
+                resultData = "4";
                 SimulateKeyPress(KeyCode.X);
                 break;
             case "5":
+                resultData = "5";
                 SimulateKeyPress(KeyCode.C);
                 break;
             case "6":
+                resultData = "6";
                 SimulateKeyPress(KeyCode.V);
                 break;
             default:
