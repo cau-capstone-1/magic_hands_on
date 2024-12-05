@@ -6,12 +6,10 @@ public class TopBarScript : MonoBehaviour
     void Start()
     {
         GameObject userNameObj = GameObject.Find("UserName");
-        userNameObj.GetComponent<TMPro.TextMeshProUGUI>().text = GameData.instance.playerName;
+        userNameObj.GetComponent<TMPro.TextMeshProUGUI>().text =
+            GameData.instance.playerName + "님 환영합니다!";
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    void Update() { }
 }
