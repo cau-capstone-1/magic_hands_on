@@ -20,15 +20,7 @@ public class StatsSØcript : MonoBehaviour
     private TMPro.TMP_Text todayAvgScore;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        UpdateStats();
-    }
-
-    // Update is called once per frame
-    void Update() { }
-
-    void OnBecameVisible()
+    void OnEnable()
     {
         UpdateStats();
     }
