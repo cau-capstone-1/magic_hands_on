@@ -9,17 +9,19 @@ using UnityEngine;
 public struct GamePlayStat
 {
     public int score;
+    public double avgSpeed;
     public string startedAt;
 
-    public GamePlayStat(int score, DateTime startedAt)
+    public GamePlayStat(int score, double avgSpeed, DateTime startedAt)
     {
         this.score = score;
+        this.avgSpeed = avgSpeed;
         this.startedAt = startedAt.ToString();
     }
 
     public object Clone()
     {
-        return new GamePlayStat(this.score, DateTime.Parse(this.startedAt));
+        return new GamePlayStat(this.score, this.avgSpeed, DateTime.Parse(this.startedAt));
     }
 }
 
@@ -45,17 +47,14 @@ public class GameData : MonoBehaviour
     {
         get
         {
-            if (_stats == null)
+            if (PlayerPrefs.HasKey("stats"))
             {
-                if (PlayerPrefs.HasKey("stats"))
-                {
-                    string json = PlayerPrefs.GetString("stats");
-                    _stats = JsonUtility.FromJson<GamePlayStats>(json).stats;
-                }
-                else
-                {
-                    _stats = new List<GamePlayStat>();
-                }
+                string json = PlayerPrefs.GetString("stats");
+                _stats = JsonUtility.FromJson<GamePlayStats>(json).stats;
+            }
+            else
+            {
+                _stats = new List<GamePlayStat>();
             }
             return _stats;
         }

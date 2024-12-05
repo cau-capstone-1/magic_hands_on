@@ -91,6 +91,10 @@ public class ArduinoController : MonoBehaviour
                 SimulateKeyPress(KeyCode.V);
                 break;
             default:
+                if (data.Contains("ms"))
+                {
+                    resultData = data;
+                }
                 Debug.LogWarning("Unhandled data: " + data);
                 break;
         }
