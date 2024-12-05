@@ -84,7 +84,6 @@ public class GameSceneController : MonoBehaviour
     [SerializeField]
     private ParticleSystem hpParticle; // ������ ��ƼŬ
 
-    [SerializeField]
     private ArduinoController arduino;
 
     public int score = 0;
@@ -177,6 +176,7 @@ public class GameSceneController : MonoBehaviour
 
     private void Start()
     {
+        arduino = new ArduinoController();
         characterAnimator = character.GetComponent<Animator>(); // Animator ������Ʈ ��������
         tutorialCanvasGroup.alpha = 0;
         dimCanvasGroup.alpha = 1;
@@ -451,13 +451,12 @@ public class GameSceneController : MonoBehaviour
             HandleBirdDamage("Green");
             arduino.ResetData();
         }
-     
+
         if (arduino.resultData == "6")
         {
             HandleBirdDamage("Blue");
             arduino.ResetData();
         }
-           
     }
 
     private void CheckInputForBirds()

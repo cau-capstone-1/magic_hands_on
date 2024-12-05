@@ -66,6 +66,12 @@ public class GameData : MonoBehaviour
         }
     }
 
+    public string serialPort
+    {
+        get { return PlayerPrefs.GetString("serialPort"); }
+        set { PlayerPrefs.SetString("serialPort", value); }
+    }
+
     private void SaveStats()
     {
         var wrapper = new GamePlayStats { stats = _stats };

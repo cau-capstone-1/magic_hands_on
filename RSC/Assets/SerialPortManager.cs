@@ -1,5 +1,8 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO.Ports;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,28 +11,33 @@ public class SerialPortManager : MonoBehaviour
     public TMPro.TMP_Dropdown portDropdown; // 포트 선택 UI (Dropdown)
     public TMPro.TMP_Text deviceInfoText; // 디바이스 정보 출력 UI
 
-    private string selectedPort = "";
+    private string selectedPort = null;
 
     void Start()
     {
-        List<string> ports = new List<string>(SerialPort.GetPortNames());
+        selectedPort = GameData.instance.serialPort;
+        List<string> ports = new List<string> { "" };
+
+        foreach (string port in SerialPort.GetPortNames())
+        {
+            ports.Add(port);
+        }
+
         if (ports.Count == 0)
         {
             ports.Add("No Ports Available");
         }
 
-        // Dropdown UI에 포트 목록 추가
         portDropdown.ClearOptions();
         portDropdown.AddOptions(ports);
     }
 
-    // 포트 선택 이벤트 핸들러
     public void OnPortSelected(int index)
     {
         selectedPort = portDropdown.options[index].text;
         if (selectedPort != "No Ports Available")
         {
-            ShowDeviceInfo(selectedPort);
+            StartCoroutine(ShowDeviceInfoWithTimeout(selectedPort, 3000)); // 3초 타임아웃
         }
         else
         {
@@ -37,24 +45,41 @@ public class SerialPortManager : MonoBehaviour
         }
     }
 
-    // 선택한 포트에 연결된 디바이스 정보 출력
-    private void ShowDeviceInfo(string portName)
+    private IEnumerator ShowDeviceInfoWithTimeout(string portName, int timeout)
     {
-        try
+        deviceInfoText.text = "Connecting...";
+        string response = "Timeout: No response from device.";
+        bool success = false;
+
+        Thread thread = new Thread(() =>
         {
-            using (SerialPort serialPort = new SerialPort(portName, 9600))
+            try
             {
-                serialPort.Open();
-                // 디바이스에 간단한 핑 요청 또는 정보 요청을 보낼 수 있음
-                serialPort.WriteLine("INFO");
-                string response = serialPort.ReadLine(); // 응답 대기
-                deviceInfoText.text = $"Device Info: {response}";
-                serialPort.Close();
+                using (SerialPort serialPort = new SerialPort(portName, 9600))
+                {
+                    serialPort.ReadTimeout = timeout; // 내부 타임아웃 설정
+                    serialPort.Open();
+                    serialPort.WriteLine("INFO");
+                    response = serialPort.ReadLine(); // 타임아웃 시 예외 발생
+                    success = true;
+                }
             }
-        }
-        catch (System.Exception ex)
+            catch (TimeoutException)
+            {
+                response = "Timeout: No response from device.";
+            }
+            catch (System.Exception ex)
+            {
+                response = $"Error: {ex.Message}";
+            }
+        });
+
+        thread.Start();
+        while (thread.IsAlive)
         {
-            deviceInfoText.text = $"Error: {ex.Message}";
+            yield return null; // 스레드가 완료될 때까지 대기
         }
+
+        deviceInfoText.text = success ? $"Device Info: {response}" : response;
     }
 }

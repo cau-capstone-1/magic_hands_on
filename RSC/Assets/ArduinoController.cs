@@ -1,17 +1,19 @@
 using System.Collections;
-using UnityEngine;
 using System.IO.Ports;
 using System.Threading;
+using UnityEngine;
 
 public class ArduinoController : MonoBehaviour
 {
-    SerialPort serialPort = new SerialPort("COM4", 9600); // 시리얼 포트와 보드레이트 설정
+    SerialPort serialPort = null;
     private string incomingData = ""; // 들어오는 데이터를 저장할 변수
     public string resultData = "";
     private Thread readThread; // 데이터를 비동기적으로 읽기 위한 스레드
 
-    void Start()
+    public ArduinoController()
     {
+        serialPort = new SerialPort(GameData.instance.serialPort, 9600); // 시리얼 포트 객체 생성
+
         try
         {
             if (!serialPort.IsOpen) // 포트가 열려 있지 않으면 열기
