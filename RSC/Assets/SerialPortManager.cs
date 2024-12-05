@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO.Ports;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 
 public class SerialPortManager : MonoBehaviour
@@ -13,7 +14,17 @@ public class SerialPortManager : MonoBehaviour
 
     private string selectedPort = null;
 
+    void OnEnable()
+    {
+        Init();
+    }
+
     void Start()
+    {
+        Init();
+    }
+
+    void Init()
     {
         selectedPort = GameData.instance.serialPort;
         List<string> ports = new List<string> { "" };
@@ -30,6 +41,11 @@ public class SerialPortManager : MonoBehaviour
 
         portDropdown.ClearOptions();
         portDropdown.AddOptions(ports);
+
+        if (selectedPort != null && ports.Contains(selectedPort))
+        {
+            portDropdown.value = ports.IndexOf(selectedPort);
+        }
     }
 
     public void OnPortSelected(int index)
