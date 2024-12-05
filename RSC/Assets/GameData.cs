@@ -47,17 +47,14 @@ public class GameData : MonoBehaviour
     {
         get
         {
-            if (_stats == null)
+            if (PlayerPrefs.HasKey("stats"))
             {
-                if (PlayerPrefs.HasKey("stats"))
-                {
-                    string json = PlayerPrefs.GetString("stats");
-                    _stats = JsonUtility.FromJson<GamePlayStats>(json).stats;
-                }
-                else
-                {
-                    _stats = new List<GamePlayStat>();
-                }
+                string json = PlayerPrefs.GetString("stats");
+                _stats = JsonUtility.FromJson<GamePlayStats>(json).stats;
+            }
+            else
+            {
+                _stats = new List<GamePlayStat>();
             }
             return _stats;
         }
