@@ -90,7 +90,7 @@ class Mission
         TMPro.TextMeshProUGUI textComponent = gameObject.AddComponent<TMPro.TextMeshProUGUI>();
         textComponent.text = text;
         textComponent.fontSize = 110;
-        textComponent.color = new Color(0.3254901961f, 0.3254901961f, 0.3254901961f);
+        textComponent.color = new Color(1f, 1f, 1f);
         textComponent.font = font;
     }
 
@@ -98,7 +98,7 @@ class Mission
     {
         if (isComplete)
         {
-            textComponent.color = new Color(0.3254901961f, 0.3254901961f, 0.3254901961f, 0.5f);
+            textComponent.color = new Color(1f, 1f, 1f, .5f);
             textComponent.text = "<s>" + textComponent.text + "</s>";
         }
     }
