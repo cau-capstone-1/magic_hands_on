@@ -40,7 +40,7 @@ public class SerialPortManager : MonoBehaviour
 
         if (selectedPort != "No Ports Available")
         {
-            StartCoroutine(ShowDeviceInfoWithTimeout(selectedPort, 3000)); // 3초 타임아웃
+            StartCoroutine(ShowDeviceInfo(selectedPort)); // 3초 타임아웃
         }
         else
         {
@@ -48,11 +48,10 @@ public class SerialPortManager : MonoBehaviour
         }
     }
 
-    private IEnumerator ShowDeviceInfoWithTimeout(string portName, int timeout)
+    private IEnumerator ShowDeviceInfo(string portName)
     {
         deviceInfoText.text = "Connecting...";
         string response = "Timeout: No response from device.";
-        bool success = false;
 
         Thread thread = new Thread(() =>
         {
@@ -60,11 +59,8 @@ public class SerialPortManager : MonoBehaviour
             {
                 using (SerialPort serialPort = new SerialPort(portName, 9600))
                 {
-                    serialPort.ReadTimeout = timeout; // 내부 타임아웃 설정
                     serialPort.Open();
-                    serialPort.WriteLine("INFO");
-                    response = serialPort.ReadLine(); // 타임아웃 시 예외 발생
-                    success = true;
+                    response = serialPort.PortName;
                 }
             }
             catch (TimeoutException)
@@ -83,6 +79,6 @@ public class SerialPortManager : MonoBehaviour
             yield return null; // 스레드가 완료될 때까지 대기
         }
 
-        deviceInfoText.text = success ? $"Device Info: {response}" : response;
+        deviceInfoText.text = response;
     }
 }
