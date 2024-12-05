@@ -426,12 +426,12 @@ public class GameSceneController : MonoBehaviour
             GameDone();
 
         // Ű �Է��� �ﰢ������ �����Ͽ� HandleBirdDamage�� ����
-        if (arduino.resultData == "1")
+        if (arduino.resultData == "1" && leftSlider.value >= 95)
         {
             DealDamageToAllBirds();
             arduino.ResetData();
         }
-        if (arduino.resultData == "2")
+        if (arduino.resultData == "2" && rightSlider.value >= 95)
         {
             HealPlayerHP();
             arduino.ResetData();

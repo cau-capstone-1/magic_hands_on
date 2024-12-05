@@ -1,12 +1,14 @@
 using System.Collections;
 using UnityEngine;
 using System.IO.Ports;
+using System.Threading;
 
 public class ArduinoController : MonoBehaviour
 {
-    SerialPort serialPort = new SerialPort("COM3", 9600); // 시리얼 포트와 보드레이트 설정
+    SerialPort serialPort = new SerialPort("COM4", 9600); // 시리얼 포트와 보드레이트 설정
     private string incomingData = ""; // 들어오는 데이터를 저장할 변수
     public string resultData = "";
+    private Thread readThread; // 데이터를 비동기적으로 읽기 위한 스레드
 
     void Start()
     {
@@ -19,8 +21,9 @@ public class ArduinoController : MonoBehaviour
                 Debug.Log("Serial port opened successfully on " + serialPort.PortName);
             }
 
-            // 시리얼 데이터를 읽는 코루틴 시작
-            StartCoroutine(ReadSerialData());
+            // 시리얼 포트에서 데이터를 읽는 별도의 스레드 시작
+            readThread = new Thread(ReadSerialData);
+            readThread.Start();
         }
         catch (System.Exception e)
         {
@@ -28,34 +31,28 @@ public class ArduinoController : MonoBehaviour
         }
     }
 
-    IEnumerator ReadSerialData()
+    void ReadSerialData()
     {
-        while (true)
+        while (serialPort.IsOpen)
         {
-            if (serialPort != null && serialPort.IsOpen)
+            try
             {
-                try
+                // 시리얼 포트에서 데이터 읽기
+                incomingData = serialPort.ReadLine().Trim();
+                if (!string.IsNullOrEmpty(incomingData))
                 {
-                    // 시리얼 포트에서 데이터 읽기
-                    incomingData = serialPort.ReadLine().Trim();
-                    if (!string.IsNullOrEmpty(incomingData))
-                    {
-                        Debug.Log("Received Data: " + incomingData);
-                        HandleInput(incomingData);
-                    }
-                }
-                catch (System.TimeoutException)
-                {
-                    // 타임아웃 발생 시 무시
-                }
-                catch (System.Exception ex)
-                {
-                    Debug.LogError("Error reading from serial port: " + ex.Message);
+                    Debug.Log("Received Data: " + incomingData);
+                    HandleInput(incomingData);
                 }
             }
-
-            // 0.1초 대기 후 다시 읽기
-            yield return new WaitForSeconds(0.1f);
+            catch (System.TimeoutException)
+            {
+                // 타임아웃 발생 시 무시
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError("Error reading from serial port: " + ex.Message);
+            }
         }
     }
 
@@ -111,6 +108,12 @@ public class ArduinoController : MonoBehaviour
         {
             serialPort.Close();
             Debug.Log("Serial port closed.");
+        }
+
+        // 스레드 종료
+        if (readThread != null && readThread.IsAlive)
+        {
+            readThread.Abort();
         }
     }
 }
