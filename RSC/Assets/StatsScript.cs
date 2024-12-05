@@ -33,22 +33,29 @@ public class StatsSØcript : MonoBehaviour
             }
         );
 
-        todayMaxSpeed.text =
-            "오늘 최고 속도: "
-            + (todayStats.Any() ? todayStats.Max((stat) => stat.avgSpeed) / 1000 + "초" : "없음");
-        todayAvgSpeed.text =
-            "오늘 평균 속도: "
-            + (
-                todayStats.Any()
-                    ? todayStats.Average((stat) => stat.avgSpeed) / 1000 + "초"
-                    : "없음"
-            );
-        todayMaxScore.text =
-            "오늘 최고 점수: "
-            + (todayStats.Any() ? todayStats.Max((stat) => stat.score) + "점" : "없음");
-        todayAvgScore.text =
-            "오늘 평균 점수: "
-            + (todayStats.Any() ? todayStats.Average((stat) => stat.score) + "점" : "없음");
+        if (todayStats.Any())
+        {
+            todayMaxSpeed.text = todayStats.Max((stat) => stat.avgSpeed) / 1000 + "초";
+            todayMaxScore.color = new Color(255f / 255f, 105f / 255f, 93f / 255f);
+            todayAvgSpeed.text = todayStats.Average((stat) => stat.avgSpeed) / 1000 + "초";
+            todayAvgSpeed.color = new Color(158f / 255f, 238f / 255f, 255f / 255f);
+
+            todayMaxScore.text = todayStats.Max((stat) => stat.score) + "점";
+            todayMaxScore.color = new Color(255f / 255f, 105f / 255f, 93f / 255f);
+            todayAvgScore.text = todayStats.Average((stat) => stat.score) + "점";
+            todayAvgScore.color = new Color(158f / 255f, 238f / 255f, 255f / 255f);
+        }
+        else
+        {
+            todayMaxSpeed.text = "없음";
+            todayMaxSpeed.color = new Color(1f, 1f, 1f, .5f);
+            todayAvgSpeed.text = "없음";
+            todayAvgSpeed.color = new Color(1f, 1f, 1f, .5f);
+            todayMaxScore.text = "없음";
+            todayMaxScore.color = new Color(1f, 1f, 1f, .5f);
+            todayAvgScore.text = "없음";
+            todayAvgScore.color = new Color(1f, 1f, 1f, .5f);
+        }
     }
 
     // Update is called once per frame
