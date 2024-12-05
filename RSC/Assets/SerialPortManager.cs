@@ -61,6 +61,7 @@ public class SerialPortManager : MonoBehaviour
                 {
                     serialPort.Open();
                     response = serialPort.PortName;
+                    serialPort.Close();
                 }
             }
             catch (TimeoutException)
