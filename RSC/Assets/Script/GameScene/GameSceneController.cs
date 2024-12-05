@@ -84,6 +84,9 @@ public class GameSceneController : MonoBehaviour
     [SerializeField]
     private ParticleSystem hpParticle; // ������ ��ƼŬ
 
+    [SerializeField]
+    private ArduinoController arduino;
+
     public int score = 0;
 
     private void TriggerDamageEffect()
@@ -423,14 +426,38 @@ public class GameSceneController : MonoBehaviour
             GameDone();
 
         // Ű �Է��� �ﰢ������ �����Ͽ� HandleBirdDamage�� ����
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (arduino.resultData == "1" && leftSlider.value >= 95)
+        {
+            DealDamageToAllBirds();
+            arduino.ResetData();
+        }
+        if (arduino.resultData == "2" && rightSlider.value >= 95)
+        {
+            HealPlayerHP();
+            arduino.ResetData();
+        }
+        if (arduino.resultData == "3")
+        {
             HandleBirdDamage("Yellow");
-        if (Input.GetKeyDown(KeyCode.X))
+            arduino.ResetData();
+        }
+        if (arduino.resultData == "4")
+        {
             HandleBirdDamage("Black");
-        if (Input.GetKeyDown(KeyCode.C))
+            arduino.ResetData();
+        }
+        if (arduino.resultData == "5")
+        {
             HandleBirdDamage("Green");
-        if (Input.GetKeyDown(KeyCode.V))
+            arduino.ResetData();
+        }
+     
+        if (arduino.resultData == "6")
+        {
             HandleBirdDamage("Blue");
+            arduino.ResetData();
+        }
+           
     }
 
     private void CheckInputForBirds()
