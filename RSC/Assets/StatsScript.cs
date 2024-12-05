@@ -22,6 +22,19 @@ public class StatsSØcript : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        UpdateStats();
+    }
+
+    // Update is called once per frame
+    void Update() { }
+
+    void OnBecameVisible()
+    {
+        UpdateStats();
+    }
+
+    public void UpdateStats()
+    {
         List<GamePlayStat> todayStats = GameData.instance.stats.FindAll(
             (stat) =>
             {
@@ -57,7 +70,4 @@ public class StatsSØcript : MonoBehaviour
             todayAvgScore.color = new Color(1f, 1f, 1f, .5f);
         }
     }
-
-    // Update is called once per frame
-    void Update() { }
 }
