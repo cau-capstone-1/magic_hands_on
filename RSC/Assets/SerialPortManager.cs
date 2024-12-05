@@ -35,6 +35,9 @@ public class SerialPortManager : MonoBehaviour
     public void OnPortSelected(int index)
     {
         selectedPort = portDropdown.options[index].text;
+
+        GameData.instance.serialPort = selectedPort;
+
         if (selectedPort != "No Ports Available")
         {
             StartCoroutine(ShowDeviceInfoWithTimeout(selectedPort, 3000)); // 3초 타임아웃
