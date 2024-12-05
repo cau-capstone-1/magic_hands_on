@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -87,6 +88,8 @@ public class GameSceneController : MonoBehaviour
     private ArduinoController arduino;
 
     public int score = 0;
+
+    public List<int> speeds = new List<int>();
 
     private void TriggerDamageEffect()
     {
@@ -451,10 +454,14 @@ public class GameSceneController : MonoBehaviour
             HandleBirdDamage("Green");
             arduino.ResetData();
         }
-
         if (arduino.resultData == "6")
         {
             HandleBirdDamage("Blue");
+            arduino.ResetData();
+        }
+        if (arduino.resultData.Contains("ms"))
+        {
+            speeds.Add(int.Parse(arduino.resultData.Replace("ms", "")));
             arduino.ResetData();
         }
     }
@@ -660,7 +667,7 @@ public class GameSceneController : MonoBehaviour
         // 게임 종료 시 남은 Life Point 당 200점
         score += playerHP * 200;
 
-        GameData.instance.AddStat(new GamePlayStat(score, startedAt));
+        GameData.instance.AddStat(new GamePlayStat(score, speeds.Average(), startedAt));
 
         // BirdParent ���� ��� ������Ʈ ����
         foreach (Transform child in parentObject)
